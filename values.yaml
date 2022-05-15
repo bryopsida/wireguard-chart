@@ -1,0 +1,10 @@
+image:
+  repository: ghcr.io/bryposda/wireguard
+  tag: latest
+  pullPolicy: Always
+wireguard:
+  serverCidr: 10.34.0.1/24
+service:
+  enabled: true
+  type: LoadBalancer
+  port: 51280
