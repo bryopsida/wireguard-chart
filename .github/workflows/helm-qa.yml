@@ -1,0 +1,11 @@
+name: Lint and Test Chart
+on:
+  pull_request:
+    paths:
+      - 'helm/**'
+jobs:
+  test:
+    name: 'Helm'
+    uses: curium-rocks/flows/.github/workflows/helm-qa.yml@main
+    with:
+      charts_dir: 'helm'
