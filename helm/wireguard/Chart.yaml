@@ -4,3 +4,5 @@ description: A Helm chart for managing a wireguard vpn in kubernetes
 type: application
 version: 0.1.0
 appVersion: "0.0.0"
+maintainers:
+  - name: bryopsida
