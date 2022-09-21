@@ -5,11 +5,21 @@ exec:
   - -c
   - 'ip link show dev wg0 | grep -s up'
 {{- end -}}
-{{- define "securitycontext" -}}
+{{- define "core.securitycontext" -}}
 capabilities:
   add:
     - NET_ADMIN
 privileged: true
+{{- end -}}
+{{- define "wg.securitycontext" -}}
+{{ include "core.securitycontext" . }}
+runAsNonRoot: true
+runAsUser: 1000
+readOnlyRootFilesystem: true
+{{- end -}}
+{{- define "init.securitycontext" -}}
+{{ include "core.securitycontext" . }}
+runAsNonRoot: false
 {{- end -}}
 apiVersion: apps/v1
 kind: Deployment
@@ -31,9 +41,12 @@ spec:
         app: "{{ .Release.Name }}-wireguard"
         role: vpn
     spec:
+      serviceAccountName: {{ .Release.Name }}-sa
+      automountServiceAccountToken: false
       securityContext:
         fsGroup: 1000
         fsGroupChangePolicy: "OnRootMismatch"
+        runAsNonRoot: true
       {{- if .Values.image.pullSecret }}
       imagePullSecrets:
         - name: "{{ .Values.image.pullSecret }}"
@@ -45,7 +58,7 @@ spec:
           - sh
           - -c
           - sysctl -w net.ipv4.ip_forward=1 && sysctl -w net.ipv4.conf.all.forwarding=1
-          securityContext: {{ include "securitycontext" . | nindent 12 }}
+          securityContext: {{ include "init.securitycontext" . | nindent 12 }}
           resources:
             requests:
               memory: 64Mi
@@ -64,7 +77,7 @@ spec:
           env:
           - name: LOG_LEVEL
             value: info
-          securityContext: {{ include "securitycontext" . | nindent 12 }}
+          securityContext: {{ include "wg.securitycontext" . | nindent 12 }}
           resources: {{ .Values.resources | toYaml | nindent 12 }}
           startupProbe: {{ include "execprobe" . | nindent 12 }}
             periodSeconds: 2
@@ -76,6 +89,8 @@ spec:
             initialDelaySeconds: 20
             periodSeconds: 10
           volumeMounts:
+          - name: run
+            mountPath: /run
           - name: config
             mountPath: /etc/wireguard/wg0.conf
             subPath: wg0.conf
@@ -83,6 +98,8 @@ spec:
             mountPath: /etc/wireguard/privatekey
             subPath: privatekey
       volumes:
+      - name: run
+        emptyDir: {}
       - name: config
         secret:
           secretName: "{{ .Release.Name }}-wg-config"
