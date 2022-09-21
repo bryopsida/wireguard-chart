@@ -14,9 +14,23 @@ A Helm chart for managing a wireguard vpn in kubernetes
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| autoscaling.enabled | bool | `true` |  |
+| autoscaling.maxReplicas | int | `10` |  |
+| autoscaling.minReplicas | int | `3` |  |
+| autoscaling.targetCPUUtilizationPercentage | int | `75` |  |
+| deploymentStrategy.rollingUpdate.maxSurge | int | `1` |  |
+| deploymentStrategy.rollingUpdate.maxUnavailable | int | `0` |  |
+| deploymentStrategy.type | string | `"RollingUpdate"` |  |
+| disruptionBudget.enabled | bool | `true` |  |
+| disruptionBudget.minAvailable | int | `2` |  |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"ghcr.io/bryopsida/wireguard"` |  |
 | image.tag | string | `"latest"` |  |
+| replicaCount | int | `3` |  |
+| resources.limits.cpu | string | `"500m"` |  |
+| resources.limits.memory | string | `"256Mi"` |  |
+| resources.requests.cpu | string | `"500m"` |  |
+| resources.requests.memory | string | `"256Mi"` |  |
 | secretName | string | `nil` | Name of a secret with a wireguard private key on key privatekey, if not provided on first install a hook generates one. |
 | service.enabled | bool | `true` | Whether the service will be created or not |
 | service.port | int | `51280` | Service port, default is 51280 UDP |
