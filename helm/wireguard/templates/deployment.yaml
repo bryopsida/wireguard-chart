@@ -1,5 +1,3 @@
-{{- $secretName := .Values.secretName | required ".Values.secretName is required." -}}
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,6 +15,13 @@ spec:
         app: "{{ .Release.Name }}-wireguard"
         role: vpn
     spec:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+      {{- if .Values.image.pullSecret }}
+      imagePullSecrets:
+        - name: "{{ .Values.image.pullSecret }}"
+      {{- end }}
       initContainers:
         - name: sysctls
           image: busybox
@@ -33,12 +38,6 @@ spec:
         - name: wireguard
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
-          imagePullSecrets:
-            - name: "{{ .Values.image.pullSecret }}"
-          command:
-          - sh
-          - -c
-          - echo "Public key '$(wg pubkey < /etc/wireguard/privatekey)'" && /entrypoint.sh
           ports:
           - containerPort: 51820
             protocol: UDP
@@ -58,16 +57,16 @@ spec:
             limits:
               memory: 256Mi
           volumeMounts:
-          - name: cfgmap
+          - name: config
             mountPath: /etc/wireguard/wg0.conf
             subPath: wg0.conf
-          - name: secret
+          - name: privatekey
             mountPath: /etc/wireguard/privatekey
             subPath: privatekey
       volumes:
-      - name: cfgmap
-        configMap:
-          name: "{{ .Release.Name }}-wg-configmap"
-      - name: secret
+      - name: config
         secret:
-          secretName: "{{ $secretName }}"
+          secretName: "{{ .Release.Name }}-wg-config"
+      - name: privatekey
+        secret:
+          secretName: {{ coalesce .Values.secretName (printf "%s-wg-generated" .Release.Name) }}

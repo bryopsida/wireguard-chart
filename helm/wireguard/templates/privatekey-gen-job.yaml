@@ -1,0 +1,125 @@
+{{- if not .Values.secretName }}
+{{- /* Only needed if a secret isn't provided */}}
+
+{{- /* Create role for the hook job so it can create a secret */}}
+{{- /* In plain terms this role will be able to create a secret with a certain name in the namespace*/}}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-secret-creator
+  labels:
+    {{- include "wireguard.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "0"
+    "helm.sh/resource-policy": delete
+    "helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded"
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["create"]
+{{- /* Need a service account for the job/hook */}}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-pre-install-job-sa
+  labels:
+    {{- include "wireguard.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "0"
+    "helm.sh/resource-policy": keep
+    "helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded"
+{{- /* Need to bind the service account to the role */}}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ .Release.Name }}-hook-create-secret
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "wireguard.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "1"
+    "helm.sh/resource-policy": delete
+    "helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded"
+subjects:
+- kind: ServiceAccount
+  name:  {{ .Release.Name }}-pre-install-job-sa
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role 
+  name: {{ .Release.Name }}-secret-creator
+  apiGroup: rbac.authorization.k8s.io
+{{- /* A script to generate the private key and create the secret is required */}}
+{{- /* A config map with the script is used to mount into a generic alpine container with kubectl already installed */}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-wg-gen-scripts
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "wireguard.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "1"
+    "helm.sh/resource-policy": delete
+    "helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded"
+data:
+{{ (.Files.Glob "scripts/*").AsConfig | indent 2 }}  
+{{- /* Create a job that cleans up after 5 minutes that creates the secret since the user didn't provide one*/}}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Release.Name }}-wg-gen"
+  namespace: "{{ .Release.Namespace }}"
+  labels:
+    {{- include "wireguard.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "2"
+    "helm.sh/resource-policy": delete
+    "helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded"
+spec:
+  ttlSecondsAfterFinished: 60
+  template:
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      serviceAccountName: {{ .Release.Name }}-pre-install-job-sa
+      restartPolicy: Never
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: script
+          configMap:
+            name: {{ .Release.Name }}-wg-gen-scripts
+            items:
+              - key: gen-key.sh
+                path: entry-point.sh
+                mode: 0755
+      containers:
+      - volumeMounts:
+          - name: script
+            mountPath: /job/
+        name: keygen-job
+        image: "ghcr.io/curium-rocks/wg-kubectl:latest"
+        imagePullPolicy: Always
+        env:
+          - name: SECRET_NAME
+            value: "{{ .Release.Name }}-wg-generated"
+          - name: RELEASE_NAMESPACE
+            value: "{{ .Release.Namespace }}"
+        command: ["/job/entry-point.sh"]
+{{- end }}

@@ -1,0 +1,18 @@
+image:
+  repository: ghcr.io/bryopsida/wireguard
+  tag: latest
+  pullPolicy: Always
+wireguard:
+  #  -- Subnet for your VPN, take care not to clash with cluster POD cidr
+  serverCidr: 10.34.0.1/24
+  # -- A collection of clients that will be added to wg0.conf, accepts objects with keys PublicKey and AllowedIPs, stored in secret
+  clients: []
+service:
+  # -- Whether the service will be created or not
+  enabled: true
+  # -- Service type, to keep internal to cluster use ClusterIP
+  type: LoadBalancer
+  # -- Service port, default is 51280 UDP
+  port: 51280
+# -- Name of a secret with a wireguard private key on key privatekey, if not provided on first install a hook generates one.
+secretName: ~

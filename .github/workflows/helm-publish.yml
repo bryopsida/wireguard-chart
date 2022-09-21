@@ -1,0 +1,12 @@
+name: Release Chart
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "helm/**"
+      - ".github/workflows/helm-publish.yml"
+jobs:
+  Release:
+    name: 'Helm'
+    uses: curium-rocks/flows/.github/workflows/helm-release.yml@main

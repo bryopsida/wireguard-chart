@@ -6,7 +6,7 @@ metadata:
   labels:
     app: "{{ .Release.Name }}-wireguard"
 spec:
-  type: LoadBalancer
+  type: {{ .Values.service.type }}
   ports:
   - name: wg
     protocol: UDP
