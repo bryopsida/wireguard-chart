@@ -1,3 +1,10 @@
+{{- define "execprobe" -}}
+exec:
+  command: 
+  - /bin/sh
+  - -c
+  - 'ip link show dev wg0 | grep -s up'
+{{- end -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -5,10 +12,13 @@ metadata:
   labels:
     role: vpn
 spec:
-  replicas: 1
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
       app: "{{ .Release.Name }}-wireguard"
+  strategy: {{ .Values.deploymentStrategy | toYaml | nindent 4 }}
   template:
     metadata:
       labels:
@@ -50,12 +60,16 @@ spec:
               add:
                 - NET_ADMIN
             privileged: true
-          resources:
-            requests:
-              memory: 64Mi
-              cpu: "100m"
-            limits:
-              memory: 256Mi
+          resources: {{ .Values.resources | toYaml | nindent 12 }}
+          startupProbe: {{ include "execprobe" . | nindent 12 }}
+            periodSeconds: 2
+            failureThreshold: 15
+          readinessProbe: {{ include "execprobe" . | nindent 12 }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe: {{ include "execprobe" . | nindent 12 }}
+            initialDelaySeconds: 20
+            periodSeconds: 10
           volumeMounts:
           - name: config
             mountPath: /etc/wireguard/wg0.conf

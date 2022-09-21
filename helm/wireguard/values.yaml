@@ -16,3 +16,24 @@ service:
   port: 51280
 # -- Name of a secret with a wireguard private key on key privatekey, if not provided on first install a hook generates one.
 secretName: ~
+replicaCount: 3
+resources:
+  requests:
+    memory: 256Mi
+    cpu: "500m"
+  limits:
+    memory: 256Mi
+    cpu: "500m"
+deploymentStrategy:
+  type: 'RollingUpdate'
+  rollingUpdate:
+    maxUnavailable: 0
+    maxSurge: 1
+disruptionBudget:
+  enabled: true
+  minAvailable: 2
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 75
