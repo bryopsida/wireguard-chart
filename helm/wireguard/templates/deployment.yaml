@@ -21,6 +21,7 @@ runAsNonRoot: true
 runAsUser: 1000
 readOnlyRootFilesystem: true
 allowPrivilegeEscalation: true
+privileged: false
 {{- end -}}
 {{- define "init.securitycontext" -}}
 {{ include "core.securitycontext" . }}
@@ -48,6 +49,10 @@ spec:
         role: vpn
     spec:
       serviceAccountName: {{ .Release.Name }}-sa
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
       automountServiceAccountToken: false
       securityContext:
         fsGroup: 1000
