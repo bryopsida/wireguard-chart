@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/bryopsida/wireguard
-  tag: latest
+  tag: main
   pullPolicy: Always
 wireguard:
   #  -- Subnet for your VPN, take care not to clash with cluster POD cidr
@@ -20,10 +20,10 @@ replicaCount: 3
 resources:
   requests:
     memory: 256Mi
-    cpu: "500m"
+    cpu: "100m"
   limits:
     memory: 256Mi
-    cpu: "500m"
+    cpu: "100m"
 deploymentStrategy:
   type: 'RollingUpdate'
   rollingUpdate:

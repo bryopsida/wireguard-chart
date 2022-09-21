@@ -25,11 +25,11 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | disruptionBudget.minAvailable | int | `2` |  |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"ghcr.io/bryopsida/wireguard"` |  |
-| image.tag | string | `"latest"` |  |
+| image.tag | string | `"main"` |  |
 | replicaCount | int | `3` |  |
-| resources.limits.cpu | string | `"500m"` |  |
+| resources.limits.cpu | string | `"100m"` |  |
 | resources.limits.memory | string | `"256Mi"` |  |
-| resources.requests.cpu | string | `"500m"` |  |
+| resources.requests.cpu | string | `"100m"` |  |
 | resources.requests.memory | string | `"256Mi"` |  |
 | secretName | string | `nil` | Name of a secret with a wireguard private key on key privatekey, if not provided on first install a hook generates one. |
 | service.enabled | bool | `true` | Whether the service will be created or not |
