@@ -70,7 +70,7 @@ metadata:
     "helm.sh/hook": pre-install
     "helm.sh/hook-weight": "1"
     "helm.sh/resource-policy": delete
-    "helm.sh/hook-delete-policy": "before-hook-creation"
+    "helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded"
 data:
 {{ (.Files.Glob "scripts/*").AsConfig | indent 2 }}  
 {{- /* Create a job that cleans up after 5 minutes that creates the secret since the user didn't provide one*/}}
@@ -86,9 +86,9 @@ metadata:
     "helm.sh/hook": pre-install
     "helm.sh/hook-weight": "2"
     "helm.sh/resource-policy": delete
-    "helm.sh/hook-delete-policy": "before-hook-creation"
+    "helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded"
 spec:
-  ttlSecondsAfterFinished: 600
+  ttlSecondsAfterFinished: 60
   template:
     spec:
       securityContext:
