@@ -116,6 +116,13 @@ spec:
         name: keygen-job
         image: "ghcr.io/curium-rocks/wg-kubectl:latest"
         imagePullPolicy: Always
+        resources:
+          requests:
+            memory: 64Mi
+            cpu: "100m"
+          limits:
+            memory: 64Mi
+            cpu: "100m"
         env:
           - name: SECRET_NAME
             value: "{{ .Release.Name }}-wg-generated"
