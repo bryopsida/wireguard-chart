@@ -9,4 +9,4 @@ jobs:
     uses: curium-rocks/flows/.github/workflows/helm-qa.yml@main
     with:
       charts_dir: 'helm'
-      helm_extra_sets: '--set service.enabled=false'
+      helm_extra_sets: '--set service.type=ClusterIP'
