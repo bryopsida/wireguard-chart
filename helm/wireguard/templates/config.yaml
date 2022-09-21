@@ -1,0 +1,20 @@
+{{- define "wg-config-template" -}}
+[Interface]
+Address = {{ .Values.wireguard.serverCidr }}
+ListenPort = 51820
+PostUp = wg set wg0 private-key /etc/wireguard/privatekey && iptables -t nat -A POSTROUTING -s {{ .Values.wireguard.serverCidr }} -o eth0 -j MASQUERADE
+PostDown = iptables -t nat -D POSTROUTING -s {{ .Values.wireguard.serverCidr }} -o eth0 -j MASQUERADE
+
+{{- range .Values.wireguard.clients }}
+[Peer]
+PublicKey = {{ .PublicKey }}
+AllowedIPs = {{ .AllowedIPs }}
+
+{{- end }}
+{{- end -}}
+kind: Secret
+apiVersion: v1
+metadata:
+  name: "{{ .Release.Name }}-wg-config"
+data:
+  wg0.conf: {{ include "wg-config-template" . | b64enc }}
