@@ -7,19 +7,26 @@ exec:
 {{- end -}}
 {{- define "core.securitycontext" -}}
 capabilities:
+  drop:
+    - ALL
   add:
     - NET_ADMIN
-privileged: true
+    - NET_RAW
+    - SETUID
+    - SETGID
 {{- end -}}
 {{- define "wg.securitycontext" -}}
 {{ include "core.securitycontext" . }}
 runAsNonRoot: true
 runAsUser: 1000
 readOnlyRootFilesystem: true
+allowPrivilegeEscalation: true
+privileged: false
 {{- end -}}
 {{- define "init.securitycontext" -}}
 {{ include "core.securitycontext" . }}
 runAsNonRoot: false
+privileged: true
 {{- end -}}
 apiVersion: apps/v1
 kind: Deployment
@@ -42,6 +49,10 @@ spec:
         role: vpn
     spec:
       serviceAccountName: {{ .Release.Name }}-sa
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
       automountServiceAccountToken: false
       securityContext:
         fsGroup: 1000

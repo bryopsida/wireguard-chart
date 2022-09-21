@@ -2,7 +2,7 @@ apiVersion: v2
 name: wireguard
 description: A Helm chart for managing a wireguard vpn in kubernetes
 type: application
-version: 0.3.0
+version: 0.4.0
 appVersion: "0.0.0"
 maintainers:
   - name: bryopsida
