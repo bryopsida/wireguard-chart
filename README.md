@@ -15,8 +15,8 @@ Follow the wireguard [documentation](https://www.wireguard.com/quickstart/) for 
 ``` yaml
 wireguard:
   clients:
-    PublicKey: <your client public key here>
-    AllowedIPs: 10.34.0.2/32
+    - PublicKey: <your client public key here>
+      AllowedIPs: 10.34.0.2/32
 ```
 
 And feeding it into helm `helm upgrade --install wg-vpn-1 wireguard/wireguard --namespace <your namespace> -f <path-to-your-overides>`
