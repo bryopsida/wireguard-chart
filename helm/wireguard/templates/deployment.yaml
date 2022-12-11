@@ -44,6 +44,8 @@ spec:
   strategy: {{ .Values.deploymentStrategy | toYaml | nindent 4 }}
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
       labels:
         app: "{{ .Release.Name }}-wireguard"
         role: vpn
