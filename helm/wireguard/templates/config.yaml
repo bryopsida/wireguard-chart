@@ -5,12 +5,14 @@ ListenPort = 51820
 PostUp = wg set wg0 private-key /etc/wireguard/privatekey && iptables -t nat -A POSTROUTING -s {{ .Values.wireguard.serverCidr }} -o eth0 -j MASQUERADE
 PostDown = iptables -t nat -D POSTROUTING -s {{ .Values.wireguard.serverCidr }} -o eth0 -j MASQUERADE
 
+# Clients
 {{- range .Values.wireguard.clients }}
 [Peer]
 PublicKey = {{ .PublicKey }}
 AllowedIPs = {{ .AllowedIPs }}
 
 {{- end }}
+# End Clients
 {{- end -}}
 kind: Secret
 apiVersion: v1
