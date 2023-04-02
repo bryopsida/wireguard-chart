@@ -5,6 +5,7 @@ exec:
   - -c
   - 'ip link show dev wg0 | grep -s up'
 {{- end -}}
+
 {{- define "core.securitycontext" -}}
 capabilities:
   drop:
@@ -15,25 +16,35 @@ capabilities:
     - SETUID
     - SETGID
 {{- end -}}
+
 {{- define "wg.securitycontext" -}}
 {{ include "core.securitycontext" . }}
-runAsNonRoot: true
-runAsUser: 1000
-readOnlyRootFilesystem: true
-allowPrivilegeEscalation: true
-privileged: false
+runAsNonRoot: {{ .Values.securityContext.runAsNonRoot | default true }}
+runAsUser: {{ .Values.securityContext.runAsUser | default 1000 }}
+readOnlyRootFilesystem: {{ .Values.securityContext.readOnlyRootFilesystem | default true }}
+allowPrivilegeEscalation: {{ .Values.securityContext.allowPrivilegeEscalation | default true }}
+privileged: {{ .Values.securityContext.privileged | default false }}
 {{- end -}}
+
 {{- define "init.securitycontext" -}}
 {{ include "core.securitycontext" . }}
 runAsNonRoot: false
 privileged: true
 {{- end -}}
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "{{ .Release.Name }}-wireguard"
   labels:
     role: vpn
+    {{- if .Values.labels }}
+    {{- range $key, $value := .Values.labels  }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+    {{- end }}
+    
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -46,9 +57,19 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+        {{- if .Values.podAnnotations }}
+        {{- range $key, $value := .Values.podAnnotations  }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
       labels:
         app: "{{ .Release.Name }}-wireguard"
         role: vpn
+        {{- if .Values.labels }}
+        {{- range $key, $value := .Values.labels }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
     spec:
       serviceAccountName: {{ .Release.Name }}-sa
       topologySpreadConstraints:
@@ -57,9 +78,9 @@ spec:
           whenUnsatisfiable: ScheduleAnyway
       automountServiceAccountToken: false
       securityContext:
-        fsGroup: 1000
+        fsGroup: {{ .Values.securityContext.runAsUser | default 1000 }}
         fsGroupChangePolicy: "OnRootMismatch"
-        runAsNonRoot: true
+        runAsNonRoot: {{ .Values.securityContext.runAsNonRoot | default true }}
       {{- if .Values.image.pullSecret }}
       imagePullSecrets:
         - name: "{{ .Values.image.pullSecret }}"

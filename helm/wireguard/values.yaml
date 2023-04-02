@@ -2,6 +2,8 @@ image:
   repository: ghcr.io/bryopsida/wireguard
   tag: main
   pullPolicy: Always
+podAnnotations: {}
+labels: {}
 wireguard:
   # -- Address of the VPN server
   serverAddress: 10.34.0.1/24
@@ -9,6 +11,12 @@ wireguard:
   serverCidr: 10.34.0.0/24
   # -- A collection of clients that will be added to wg0.conf, accepts objects with keys PublicKey and AllowedIPs, stored in secret
   clients: []
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: true
+  privileged: false
 service:
   # -- Whether the service will be created or not
   enabled: true

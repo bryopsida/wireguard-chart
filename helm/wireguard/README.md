@@ -1,6 +1,6 @@
 # wireguard
 
-![Version: 0.7.0](https://img.shields.io/badge/Version-0.7.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.8.0](https://img.shields.io/badge/Version-0.8.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm chart for managing a wireguard vpn in kubernetes
 
@@ -26,12 +26,19 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"ghcr.io/bryopsida/wireguard"` |  |
 | image.tag | string | `"main"` |  |
+| labels | object | `{}` |  |
+| podAnnotations | object | `{}` |  |
 | replicaCount | int | `3` |  |
 | resources.limits.cpu | string | `"100m"` |  |
 | resources.limits.memory | string | `"256Mi"` |  |
 | resources.requests.cpu | string | `"100m"` |  |
 | resources.requests.memory | string | `"256Mi"` |  |
 | secretName | string | `nil` | Name of a secret with a wireguard private key on key privatekey, if not provided on first install a hook generates one. |
+| securityContext.allowPrivilegeEscalation | bool | `true` |  |
+| securityContext.privileged | bool | `false` |  |
+| securityContext.readOnlyRootFilesystem | bool | `true` |  |
+| securityContext.runAsNonRoot | bool | `true` |  |
+| securityContext.runAsUser | int | `1000` |  |
 | service.enabled | bool | `true` | Whether the service will be created or not |
 | service.port | int | `51280` | Service port, default is 51280 UDP |
 | service.type | string | `"LoadBalancer"` | Service type, to keep internal to cluster use ClusterIP |
