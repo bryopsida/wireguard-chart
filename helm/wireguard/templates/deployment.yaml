@@ -40,7 +40,9 @@ metadata:
   labels:
     role: vpn
     {{- if .Values.labels }}
-    {{ .Values.labels | toYaml | nindent 4 }}
+    {{- range $key, $value := .Values.labels  }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
     {{- end }}
     
 spec:
@@ -56,12 +58,18 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
         {{- if .Values.podAnnotations }}
-        {{ .Values.podAnnotations | toYaml | nindent 8 }}
+        {{- range $key, $value := .Values.podAnnotations  }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
         {{- end }}
       labels:
         app: "{{ .Release.Name }}-wireguard"
         role: vpn
-        {{ .Values.labels | toYaml | nindent 8 }}
+        {{- if .Values.labels }}
+        {{- range $key, $value := .Values.labels }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
     spec:
       serviceAccountName: {{ .Release.Name }}-sa
       topologySpreadConstraints:
