@@ -13,7 +13,7 @@ securityContext:
   runAsNonRoot: true
   runAsUser: 1000
   readOnlyRootFilesystem: true
-  allowPrivilegeEscalation: false
+  allowPrivilegeEscalation: true
   privileged: false
 service:
   # -- Whether the service will be created or not
