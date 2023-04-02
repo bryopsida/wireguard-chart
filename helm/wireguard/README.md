@@ -32,7 +32,7 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | resources.requests.cpu | string | `"100m"` |  |
 | resources.requests.memory | string | `"256Mi"` |  |
 | secretName | string | `nil` | Name of a secret with a wireguard private key on key privatekey, if not provided on first install a hook generates one. |
-| securityContext.allowPrivilegeEscalation | bool | `false` |  |
+| securityContext.allowPrivilegeEscalation | bool | `true` |  |
 | securityContext.privileged | bool | `false` |  |
 | securityContext.readOnlyRootFilesystem | bool | `true` |  |
 | securityContext.runAsNonRoot | bool | `true` |  |
