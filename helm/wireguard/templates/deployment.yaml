@@ -5,6 +5,7 @@ exec:
   - -c
   - 'ip link show dev wg0 | grep -s up'
 {{- end -}}
+
 {{- define "core.securitycontext" -}}
 capabilities:
   drop:
@@ -15,19 +16,23 @@ capabilities:
     - SETUID
     - SETGID
 {{- end -}}
+
 {{- define "wg.securitycontext" -}}
 {{ include "core.securitycontext" . }}
-runAsNonRoot: true
-runAsUser: 1000
-readOnlyRootFilesystem: true
-allowPrivilegeEscalation: true
-privileged: false
+runAsNonRoot: {{ .Values.securityContext.runAsNonRoot | default true }}
+runAsUser: {{ .Values.securityContext.runAsUser | default 1000 }}
+readOnlyRootFilesystem: {{ .Values.securityContext.readOnlyRootFilesystem | default true }}
+allowPrivilegeEscalation: {{ .Values.securityContext.allowPrivilegeEscalation | default false }}
+privileged: {{ .Values.securityContext.allowPrivilegeEscalation | default false }}
 {{- end -}}
+
 {{- define "init.securitycontext" -}}
 {{ include "core.securitycontext" . }}
 runAsNonRoot: false
 privileged: true
 {{- end -}}
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -57,9 +62,9 @@ spec:
           whenUnsatisfiable: ScheduleAnyway
       automountServiceAccountToken: false
       securityContext:
-        fsGroup: 1000
+        fsGroup: {{ .Values.securityContext.runAsUser | default 1000 }}
         fsGroupChangePolicy: "OnRootMismatch"
-        runAsNonRoot: true
+        runAsNonRoot: {{ .Values.securityContext.runAsNonRoot | default true }}
       {{- if .Values.image.pullSecret }}
       imagePullSecrets:
         - name: "{{ .Values.image.pullSecret }}"

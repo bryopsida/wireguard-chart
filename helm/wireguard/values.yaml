@@ -9,6 +9,12 @@ wireguard:
   serverCidr: 10.34.0.0/24
   # -- A collection of clients that will be added to wg0.conf, accepts objects with keys PublicKey and AllowedIPs, stored in secret
   clients: []
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  privileged: false
 service:
   # -- Whether the service will be created or not
   enabled: true
