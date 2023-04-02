@@ -23,7 +23,7 @@ runAsNonRoot: {{ .Values.securityContext.runAsNonRoot | default true }}
 runAsUser: {{ .Values.securityContext.runAsUser | default 1000 }}
 readOnlyRootFilesystem: {{ .Values.securityContext.readOnlyRootFilesystem | default true }}
 allowPrivilegeEscalation: {{ .Values.securityContext.allowPrivilegeEscalation | default true }}
-privileged: {{ .Values.securityContext.allowPrivilegeEscalation | default false }}
+privileged: {{ .Values.securityContext.privileged | default false }}
 {{- end -}}
 
 {{- define "init.securitycontext" -}}
