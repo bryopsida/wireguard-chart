@@ -26,6 +26,8 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"ghcr.io/bryopsida/wireguard"` |  |
 | image.tag | string | `"main"` |  |
+| labels | object | `{}` |  |
+| podAnnotations | object | `{}` |  |
 | replicaCount | int | `3` |  |
 | resources.limits.cpu | string | `"100m"` |  |
 | resources.limits.memory | string | `"256Mi"` |  |

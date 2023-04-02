@@ -2,6 +2,8 @@ image:
   repository: ghcr.io/bryopsida/wireguard
   tag: main
   pullPolicy: Always
+podAnnotations: {}
+labels: {}
 wireguard:
   # -- Address of the VPN server
   serverAddress: 10.34.0.1/24

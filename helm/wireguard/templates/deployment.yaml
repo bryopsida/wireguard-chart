@@ -22,7 +22,7 @@ capabilities:
 runAsNonRoot: {{ .Values.securityContext.runAsNonRoot | default true }}
 runAsUser: {{ .Values.securityContext.runAsUser | default 1000 }}
 readOnlyRootFilesystem: {{ .Values.securityContext.readOnlyRootFilesystem | default true }}
-allowPrivilegeEscalation: {{ .Values.securityContext.allowPrivilegeEscalation | default false }}
+allowPrivilegeEscalation: {{ .Values.securityContext.allowPrivilegeEscalation | default true }}
 privileged: {{ .Values.securityContext.allowPrivilegeEscalation | default false }}
 {{- end -}}
 
@@ -39,6 +39,7 @@ metadata:
   name: "{{ .Release.Name }}-wireguard"
   labels:
     role: vpn
+    {{ .Values.labels | toYaml | nindent 8 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -51,9 +52,11 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+        {{ .Values.podAnnotations | toYaml | nindent 8 }}
       labels:
         app: "{{ .Release.Name }}-wireguard"
         role: vpn
+        {{ .Values.labels | toYaml | nindent 8 }}
     spec:
       serviceAccountName: {{ .Release.Name }}-sa
       topologySpreadConstraints:
