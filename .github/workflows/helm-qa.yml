@@ -1,5 +1,8 @@
 name: Lint and Test Chart
 on:
+  workflow_dispatch:
+  schedule:
+    - cron:  '5 8 * * SAT'
   pull_request:
     paths:
       - 'helm/**'
