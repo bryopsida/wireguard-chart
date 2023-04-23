@@ -111,6 +111,10 @@ spec:
           env:
           - name: LOG_LEVEL
             value: info
+          {{- range $key, $value := .Values.extraEnv }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
           securityContext: {{ include "wg.securitycontext" . | nindent 12 }}
           resources: {{ .Values.resources | toYaml | nindent 12 }}
           startupProbe: {{ include "execprobe" . | nindent 12 }}
