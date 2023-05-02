@@ -50,3 +50,7 @@ autoscaling:
 # -- Provide additional environment variables to the wireguard container
 extraEnv: {}
 #  TEST_ENV_VAR: test-value
+# -- If provided, this secret will be used instead of the config created from the helm value scope
+configSecretName: ~
+# -- The property/key on the secret holding the wireguard configuration file
+configSecretProperty: wg0.conf

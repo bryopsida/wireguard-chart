@@ -17,9 +17,11 @@ PresharedKey = {{ .PresharedKey }}
 {{- end }}
 # End Clients
 {{- end -}}
+{{- if not .Values.configSecretName }}
 kind: Secret
 apiVersion: v1
 metadata:
   name: "{{ .Release.Name }}-wg-config"
 data:
   wg0.conf: {{ include "wg-config-template" . | b64enc }}
+{{- end }}

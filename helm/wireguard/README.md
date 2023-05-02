@@ -1,6 +1,6 @@
 # wireguard
 
-![Version: 0.9.0](https://img.shields.io/badge/Version-0.9.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.10.0](https://img.shields.io/badge/Version-0.10.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm chart for managing a wireguard vpn in kubernetes
 
@@ -18,6 +18,8 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | autoscaling.maxReplicas | int | `10` |  |
 | autoscaling.minReplicas | int | `3` |  |
 | autoscaling.targetCPUUtilizationPercentage | int | `75` |  |
+| configSecretName | string | `nil` | If provided, this secret will be used instead of the config created from the helm value scope |
+| configSecretProperty | string | `"wg0.conf"` | The property/key on the secret holding the wireguard configuration file |
 | deploymentStrategy.rollingUpdate.maxSurge | int | `1` |  |
 | deploymentStrategy.rollingUpdate.maxUnavailable | int | `0` |  |
 | deploymentStrategy.type | string | `"RollingUpdate"` |  |
