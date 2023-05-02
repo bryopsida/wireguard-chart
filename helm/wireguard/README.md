@@ -1,6 +1,6 @@
 # wireguard
 
-![Version: 0.9.0](https://img.shields.io/badge/Version-0.9.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.10.0](https://img.shields.io/badge/Version-0.10.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm chart for managing a wireguard vpn in kubernetes
 
@@ -18,9 +18,13 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | autoscaling.maxReplicas | int | `10` |  |
 | autoscaling.minReplicas | int | `3` |  |
 | autoscaling.targetCPUUtilizationPercentage | int | `75` |  |
+| configSecretName | string | `nil` | If provided, this secret will be used instead of the config created from the helm value scope |
+| configSecretProperty | string | `"wg0.conf"` | The property/key on the secret holding the wireguard configuration file |
 | deploymentStrategy.rollingUpdate.maxSurge | int | `1` |  |
 | deploymentStrategy.rollingUpdate.maxUnavailable | int | `0` |  |
 | deploymentStrategy.type | string | `"RollingUpdate"` |  |
+| disableConfigManagement | bool | `false` | Disable creation and any mount of the wireguard confifugration file, this assumes another mechanism is provided/used to manage a configuration file |
+| disablePrivateKeyManagement | bool | `false` | Disable creation and any mounting of a private key, this assumes another mechanism is provided/used at the container level to fetch the private key |
 | disruptionBudget.enabled | bool | `true` |  |
 | disruptionBudget.minAvailable | int | `2` |  |
 | extraEnv | object | `{}` | Provide additional environment variables to the wireguard container |
@@ -43,6 +47,8 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | service.enabled | bool | `true` | Whether the service will be created or not |
 | service.port | int | `51280` | Service port, default is 51280 UDP |
 | service.type | string | `"LoadBalancer"` | Service type, to keep internal to cluster use ClusterIP |
+| volumeMounts | object | `{}` | Passthrough pod volume mounts |
+| volumes | object | `{}` | Passthrough pod volumes |
 | wireguard.clients | list | `[]` | A collection of clients that will be added to wg0.conf, accepts objects with keys PublicKey and AllowedIPs, stored in secret |
 | wireguard.serverAddress | string | `"10.34.0.1/24"` | Address of the VPN server |
 | wireguard.serverCidr | string | `"10.34.0.0/24"` |  |

@@ -56,7 +56,9 @@ spec:
   template:
     metadata:
       annotations:
+        {{- if not .Values.configSecretName }}
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+        {{- end }}
         {{- if .Values.podAnnotations }}
         {{- range $key, $value := .Values.podAnnotations  }}
         {{ $key }}: {{ $value | quote }}
@@ -110,7 +112,7 @@ spec:
             name: wireguard
           env:
           - name: LOG_LEVEL
-            value: info
+            value: {{ default "info" .Values.logLevel }}
           {{- range $key, $value := .Values.extraEnv }}
           - name: {{ $key }}
             value: {{ $value | quote }}
@@ -129,18 +131,32 @@ spec:
           volumeMounts:
           - name: run
             mountPath: /run
+          {{- if not .Values.disableConfigManagement }}
           - name: config
             mountPath: /etc/wireguard/wg0.conf
-            subPath: wg0.conf
+            subPath: {{ .Values.configSecretProperty | quote }}
+          {{- end }}
+          {{- if not .Values.disablePrivateKeyManagement }}
           - name: privatekey
             mountPath: /etc/wireguard/privatekey
             subPath: privatekey
+          {{- end }}
+          {{- if .Values.volumeMounts }}
+            {{- .Values.volumeMounts | toYaml | nindent 10 }}
+          {{- end }}
       volumes:
       - name: run
         emptyDir: {}
+      {{- if not .Values.disableConfigManagement }}
       - name: config
         secret:
-          secretName: "{{ .Release.Name }}-wg-config"
+          secretName: "{{ coalesce .Values.configSecretName (printf "%s-wg-config" .Release.Name) }}"
+      {{- end }}
+      {{- if not .Values.disablePrivateKeyManagement }}
       - name: privatekey
         secret:
-          secretName: {{ coalesce .Values.secretName (printf "%s-wg-generated" .Release.Name) }}
+          secretName: "{{ coalesce .Values.secretName (printf "%s-wg-generated" .Release.Name) }}"
+      {{- end }}
+      {{- if .Values.volumes }}
+        {{- .Values.volumes | toYaml | nindent 6 }}
+      {{- end }}

@@ -1,0 +1,7 @@
+volumes:
+  - name: vol
+    hostPath:
+      path: /any/path/it/will/be/replaced
+volumeMounts:
+  - name: vol
+    mountPath: /mount-in-container
