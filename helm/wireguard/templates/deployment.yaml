@@ -131,18 +131,26 @@ spec:
           volumeMounts:
           - name: run
             mountPath: /run
+          {{- if not .Values.disableConfigManagement }}
           - name: config
             mountPath: /etc/wireguard/wg0.conf
             subPath: {{ .Values.configSecretProperty | quote }}
+          {{- end }}
+          {{- if not .Values.disablePrivateKeyManagement }}
           - name: privatekey
             mountPath: /etc/wireguard/privatekey
             subPath: privatekey
+          {{- end }}
       volumes:
       - name: run
         emptyDir: {}
+      {{- if not .Values.disableConfigManagement }}
       - name: config
         secret:
           secretName: "{{ coalesce .Values.configSecretName (printf "%s-wg-config" .Release.Name) }}"
+      {{- end }}
+      {{- if not .Values.disablePrivateKeyManagement }}
       - name: privatekey
         secret:
           secretName: "{{ coalesce .Values.secretName (printf "%s-wg-generated" .Release.Name) }}"
+      {{- end }}

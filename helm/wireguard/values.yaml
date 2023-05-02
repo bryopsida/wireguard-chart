@@ -54,3 +54,7 @@ extraEnv: {}
 configSecretName: ~
 # -- The property/key on the secret holding the wireguard configuration file
 configSecretProperty: wg0.conf
+# -- Disable creation and any mounting of a private key, this assumes another mechanism is provided/used at the container level to fetch the private key
+disablePrivateKeyManagement: false
+# -- Disable creation and any mount of the wireguard confifugration file, this assumes another mechanism is provided/used to manage a configuration file
+disableConfigManagement: false

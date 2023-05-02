@@ -1,4 +1,4 @@
-{{- if not .Values.secretName }}
+{{- if and (not .Values.secretName) (not .Values.disablePrivateKeyManagement)  }}
 {{- /* Only needed if a secret isn't provided */}}
 
 {{- /* Create role for the hook job so it can create a secret */}}

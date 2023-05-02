@@ -17,7 +17,7 @@ PresharedKey = {{ .PresharedKey }}
 {{- end }}
 # End Clients
 {{- end -}}
-{{- if not .Values.configSecretName }}
+{{- if and (not .Values.configSecretName) (not .Values.disableConfigManagement) }}
 kind: Secret
 apiVersion: v1
 metadata:
