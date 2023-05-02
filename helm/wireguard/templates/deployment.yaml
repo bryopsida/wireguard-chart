@@ -141,6 +141,9 @@ spec:
             mountPath: /etc/wireguard/privatekey
             subPath: privatekey
           {{- end }}
+          {{- if .Values.volumeMounts }}
+            {{- .Values.volumeMounts | toYaml | nindent 10 }}
+          {{- end }}
       volumes:
       - name: run
         emptyDir: {}
@@ -153,4 +156,7 @@ spec:
       - name: privatekey
         secret:
           secretName: "{{ coalesce .Values.secretName (printf "%s-wg-generated" .Release.Name) }}"
+      {{- end }}
+      {{- if .Values.volumes }}
+        {{- .Values.volumes | toYaml | nindent 6 }}
       {{- end }}

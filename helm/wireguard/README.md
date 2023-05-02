@@ -47,6 +47,8 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | service.enabled | bool | `true` | Whether the service will be created or not |
 | service.port | int | `51280` | Service port, default is 51280 UDP |
 | service.type | string | `"LoadBalancer"` | Service type, to keep internal to cluster use ClusterIP |
+| volumeMounts | object | `{}` | Passthrough pod volume mounts |
+| volumes | object | `{}` | Passthrough pod volumes |
 | wireguard.clients | list | `[]` | A collection of clients that will be added to wg0.conf, accepts objects with keys PublicKey and AllowedIPs, stored in secret |
 | wireguard.serverAddress | string | `"10.34.0.1/24"` | Address of the VPN server |
 | wireguard.serverCidr | string | `"10.34.0.0/24"` |  |

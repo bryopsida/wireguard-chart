@@ -58,3 +58,7 @@ configSecretProperty: wg0.conf
 disablePrivateKeyManagement: false
 # -- Disable creation and any mount of the wireguard confifugration file, this assumes another mechanism is provided/used to manage a configuration file
 disableConfigManagement: false
+# -- Passthrough pod volumes
+volumes: {}
+# -- Passthrough pod volume mounts
+volumeMounts: {}
