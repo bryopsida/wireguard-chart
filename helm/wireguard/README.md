@@ -23,6 +23,8 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | deploymentStrategy.rollingUpdate.maxSurge | int | `1` |  |
 | deploymentStrategy.rollingUpdate.maxUnavailable | int | `0` |  |
 | deploymentStrategy.type | string | `"RollingUpdate"` |  |
+| disableConfigManagement | bool | `false` | Disable creation and any mount of the wireguard confifugration file, this assumes another mechanism is provided/used to manage a configuration file |
+| disablePrivateKeyManagement | bool | `false` | Disable creation and any mounting of a private key, this assumes another mechanism is provided/used at the container level to fetch the private key |
 | disruptionBudget.enabled | bool | `true` |  |
 | disruptionBudget.minAvailable | int | `2` |  |
 | extraEnv | object | `{}` | Provide additional environment variables to the wireguard container |
