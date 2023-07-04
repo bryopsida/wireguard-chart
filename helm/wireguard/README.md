@@ -45,7 +45,7 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | securityContext.runAsNonRoot | bool | `true` |  |
 | securityContext.runAsUser | int | `1000` |  |
 | service.enabled | bool | `true` | Whether the service will be created or not |
-| service.port | int | `51280` | Service port, default is 51280 UDP |
+| service.port | int | `51820` | Service port, default is 51820 UDP |
 | service.type | string | `"LoadBalancer"` | Service type, to keep internal to cluster use ClusterIP |
 | volumeMounts | object | `{}` | Passthrough pod volume mounts |
 | volumes | object | `{}` | Passthrough pod volumes |
