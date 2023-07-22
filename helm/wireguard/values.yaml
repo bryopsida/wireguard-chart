@@ -22,7 +22,7 @@ service:
   enabled: true
   # -- Service type, to keep internal to cluster use ClusterIP
   type: LoadBalancer
-  # -- Service port, default is 51280 UDP
+  # -- Service port, default is 51820 UDP
   port: 51820
 # -- Name of a secret with a wireguard private key on key privatekey, if not provided on first install a hook generates one.
 secretName: ~
