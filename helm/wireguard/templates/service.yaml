@@ -12,6 +12,9 @@ spec:
     protocol: UDP
     port: {{ .Values.service.port }}
     targetPort: 51820
+    {{- if .Values.service.type | eq "NodePort" }}
+    nodePort: {{ .Values.service.nodePort }}
+    {{- end }}
   selector:
     app: "{{ .Release.Name }}-wireguard"
 {{- end }}
