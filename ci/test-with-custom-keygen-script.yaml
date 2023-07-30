@@ -1,0 +1,10 @@
+keygenJob:
+  extraScripts:
+    test.sh: |
+      #!/usr/bin/env sh
+      echo "Hello from custom script, EXTRA_NAMESPACE=$EXTRA_NAMESPACE"
+      /job/entry-point.sh
+  extraEnv:
+    EXTRA_NAMESPACE: "{{ .Release.Namespace }}"
+  command:
+    - "/job/test.sh"

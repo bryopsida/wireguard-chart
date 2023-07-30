@@ -20,6 +20,12 @@ keygenJob:
     privileged: false
     allowPrivilegeEscalation: false
     readOnlyRootFilesystem: true
+  # -- Specify the script to run to generate the private key
+  command: ["/job/entry-point.sh"]
+  # -- Inject additional scripts into the key generation job
+  extraScripts: {}
+  # -- Add additional environment variables to the key generation job, supports helm templating
+  extraEnv: {}
 podAnnotations: {}
 labels: {}
 wireguard:

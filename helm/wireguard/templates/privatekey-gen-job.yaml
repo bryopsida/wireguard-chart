@@ -72,7 +72,13 @@ metadata:
     "helm.sh/resource-policy": delete
     "helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded"
 data:
-{{ (.Files.Glob "scripts/*").AsConfig | indent 2 }}  
+{{ (.Files.Glob "scripts/*").AsConfig | indent 2 }}
+{{- if .Values.keygenJob.extraScripts }}
+{{- range $key, $value := .Values.keygenJob.extraScripts }}
+  {{- $key | nindent 2 }}: |
+    {{- $value | nindent 4 }}
+  {{- end }}
+{{- end }}
 {{- /* Create a job that cleans up after 5 minutes that creates the secret since the user didn't provide one*/}}
 ---
 apiVersion: batch/v1
@@ -107,6 +113,11 @@ spec:
               - key: gen-key.sh
                 path: entry-point.sh
                 mode: 0755
+              {{- range $key, $value := .Values.keygenJob.extraScripts }}
+              - key: {{ $key }}
+                path: {{ $key }}
+                mode: 0755
+              {{- end }}
       containers:
       - volumeMounts:
           - name: script
@@ -127,5 +138,11 @@ spec:
             value: "{{ .Release.Name }}-wg-generated"
           - name: RELEASE_NAMESPACE
             value: "{{ .Release.Namespace }}"
-        command: ["/job/entry-point.sh"]
+          - name: RELEASE_NAME
+            value: "{{ .Release.Name }}"
+          {{- range $key, $value := .Values.keygenJob.extraEnv }}
+          - name: {{ $key }}
+            value: {{ tpl $value $ | quote }}
+          {{- end }}
+        command: {{ .Values.keygenJob.command | toYaml | nindent 10}}
 {{- end }}
