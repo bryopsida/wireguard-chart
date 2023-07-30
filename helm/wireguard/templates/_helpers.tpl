@@ -49,3 +49,18 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
+
+
+{{/* Seccomp profile partial */}}
+{{- define "wireguard.seccompProfile" -}}
+{{- if .Values.securityContext.seccompProfile }}
+seccompProfile: {{ .Values.securityContext.seccompProfile | toYaml | nindent 2}}
+{{- end }}
+{{- end -}}
+
+{{/* Runtime Class partial */}}
+{{- define "wireguard.runtimeClass" }}
+{{- if .Values.runtimeClassName }}
+runtimeClassName: "{{ .Values.runtimeClassName }}"
+{{- end }}
+{{- end }}

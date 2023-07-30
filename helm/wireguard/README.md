@@ -1,6 +1,6 @@
 # wireguard
 
-![Version: 0.12.0](https://img.shields.io/badge/Version-0.12.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.13.0](https://img.shields.io/badge/Version-0.13.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm chart for managing a wireguard vpn in kubernetes
 
@@ -31,6 +31,21 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"ghcr.io/bryopsida/wireguard"` |  |
 | image.tag | string | `"main"` |  |
+| keygenJob.command | list | `["/job/entry-point.sh"]` | Specify the script to run to generate the private key |
+| keygenJob.containerSecurityContext.allowPrivilegeEscalation | bool | `false` |  |
+| keygenJob.containerSecurityContext.privileged | bool | `false` |  |
+| keygenJob.containerSecurityContext.readOnlyRootFilesystem | bool | `true` |  |
+| keygenJob.containerSecurityContext.runAsGroup | int | `1000` |  |
+| keygenJob.containerSecurityContext.runAsNonRoot | bool | `true` |  |
+| keygenJob.containerSecurityContext.runAsUser | int | `1000` |  |
+| keygenJob.extraEnv | object | `{}` | Add additional environment variables to the key generation job, supports helm templating |
+| keygenJob.extraScripts | object | `{}` | Inject additional scripts into the key generation job |
+| keygenJob.image.pullPolicy | string | `"Always"` |  |
+| keygenJob.image.repository | string | `"ghcr.io/curium-rocks/wg-kubectl"` |  |
+| keygenJob.image.tag | string | `"latest"` |  |
+| keygenJob.podSecurityContext.fsGroup | int | `1000` |  |
+| keygenJob.podSecurityContext.fsGroupChangePolicy | string | `"Always"` |  |
+| keygenJob.podSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
 | labels | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
 | replicaCount | int | `3` |  |
@@ -38,6 +53,7 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | resources.limits.memory | string | `"256Mi"` |  |
 | resources.requests.cpu | string | `"100m"` |  |
 | resources.requests.memory | string | `"256Mi"` |  |
+| runtimeClassName | string | `nil` | Override the default runtime class of the container, if not provided `runc` will most likely be used |
 | secretName | string | `nil` | Name of a secret with a wireguard private key on key privatekey, if not provided on first install a hook generates one. |
 | securityContext.allowPrivilegeEscalation | bool | `true` |  |
 | securityContext.privileged | bool | `false` |  |

@@ -7,6 +7,7 @@ exec:
 {{- end -}}
 
 {{- define "core.securitycontext" -}}
+{{ include "wireguard.seccompProfile" . }}
 capabilities:
   drop:
     - ALL
@@ -73,16 +74,31 @@ spec:
         {{- end }}
         {{- end }}
     spec:
+      {{- include "wireguard.runtimeClass" . | indent 6 }}
+      {{- if .Values.dnsPolicy }}
+      dnsPolicy: {{ .Values.dnsPolicy }}
+      {{- end }}
+      {{- if .Values.dnsConfig }}
+      dnsConfig: {{ .Values.dnsConfig | toYaml | nindent  8 }}
+      {{- end }}
       serviceAccountName: {{ .Release.Name }}-sa
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
           whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: "{{ .Release.Name }}-wireguard"
+          {{- if semverCompare ">=1.27-0" .Capabilities.KubeVersion.GitVersion }}
+          matchLabelKeys:
+            - pod-template-hash
+          {{- end }}
       automountServiceAccountToken: false
       securityContext:
         fsGroup: {{ .Values.securityContext.runAsUser | default 1000 }}
         fsGroupChangePolicy: "OnRootMismatch"
         runAsNonRoot: {{ .Values.securityContext.runAsNonRoot | default true }}
+        {{- include "wireguard.seccompProfile" . | indent 8 }}
       {{- if .Values.image.pullSecret }}
       imagePullSecrets:
         - name: "{{ .Values.image.pullSecret }}"
@@ -115,7 +131,14 @@ spec:
             value: {{ default "info" .Values.logLevel }}
           {{- range $key, $value := .Values.extraEnv }}
           - name: {{ $key }}
-            value: {{ $value | quote }}
+            value: {{ (tpl $value $) | quote }}
+          {{- end }}
+          {{- range $key, $value := .Values.extraEnvSecrets }}
+          - name: {{ $key }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ tpl $value.secretName $ }}
+                key: {{ tpl $value.secretPropertyName $ }}
           {{- end }}
           securityContext: {{ include "wg.securitycontext" . | nindent 12 }}
           resources: {{ .Values.resources | toYaml | nindent 12 }}
