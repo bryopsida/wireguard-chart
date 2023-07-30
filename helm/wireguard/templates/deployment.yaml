@@ -129,7 +129,14 @@ spec:
             value: {{ default "info" .Values.logLevel }}
           {{- range $key, $value := .Values.extraEnv }}
           - name: {{ $key }}
-            value: {{ $value | quote }}
+            value: {{ (tpl $value $) | quote }}
+          {{- end }}
+          {{- range $key, $value := .Values.extraEnvSecrets }}
+          - name: {{ $key }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ tpl $value.secretName $ }}
+                key: {{ tpl $value.secretPropertyName $ }}
           {{- end }}
           securityContext: {{ include "wg.securitycontext" . | nindent 12 }}
           resources: {{ .Values.resources | toYaml | nindent 12 }}

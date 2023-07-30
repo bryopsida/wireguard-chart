@@ -31,12 +31,15 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"ghcr.io/bryopsida/wireguard"` |  |
 | image.tag | string | `"main"` |  |
+| keygenJob.command | list | `["/job/entry-point.sh"]` | Specify the script to run to generate the private key |
 | keygenJob.containerSecurityContext.allowPrivilegeEscalation | bool | `false` |  |
 | keygenJob.containerSecurityContext.privileged | bool | `false` |  |
 | keygenJob.containerSecurityContext.readOnlyRootFilesystem | bool | `true` |  |
 | keygenJob.containerSecurityContext.runAsGroup | int | `1000` |  |
 | keygenJob.containerSecurityContext.runAsNonRoot | bool | `true` |  |
 | keygenJob.containerSecurityContext.runAsUser | int | `1000` |  |
+| keygenJob.extraEnv | object | `{}` | Add additional environment variables to the key generation job, supports helm templating |
+| keygenJob.extraScripts | object | `{}` | Inject additional scripts into the key generation job |
 | keygenJob.image.pullPolicy | string | `"Always"` |  |
 | keygenJob.image.repository | string | `"ghcr.io/curium-rocks/wg-kubectl"` |  |
 | keygenJob.image.tag | string | `"latest"` |  |

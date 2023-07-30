@@ -144,5 +144,12 @@ spec:
           - name: {{ $key }}
             value: {{ tpl $value $ | quote }}
           {{- end }}
+          {{- range $key, $value := .Values.keygenJob.extraEnvSecrets }}
+          - name: {{ $key }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ tpl $value.secretName $ }}
+                key: {{ tpl $value.secretPropertyName $ }}
+          {{- end }}
         command: {{ .Values.keygenJob.command | toYaml | nindent 10}}
 {{- end }}
