@@ -7,6 +7,7 @@ exec:
 {{- end -}}
 
 {{- define "core.securitycontext" -}}
+{{ include "wireguard.seccompProfile" . }}
 capabilities:
   drop:
     - ALL
@@ -73,16 +74,28 @@ spec:
         {{- end }}
         {{- end }}
     spec:
+      {{- include "wireguard.runtimeClass" . | indent 6 }}
+      {{- if .Values.dnsPolicy }}
+      dnsPolicy: {{ .Values.dnsPolicy }}
+      {{- end }}
+      {{- if .Values.dnsConfig }}
+      dnsConfig: {{ .Values.dnsConfig | toYaml | nindent  8 }}
+      {{- end }}
       serviceAccountName: {{ .Release.Name }}-sa
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
           whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            app: "{{ .Release.Name }}-wireguard"
+          matchLabelKeys:
+            - pod-template-hash
       automountServiceAccountToken: false
       securityContext:
         fsGroup: {{ .Values.securityContext.runAsUser | default 1000 }}
         fsGroupChangePolicy: "OnRootMismatch"
         runAsNonRoot: {{ .Values.securityContext.runAsNonRoot | default true }}
+        {{- include "wireguard.seccompProfile" . | indent 8 }}
       {{- if .Values.image.pullSecret }}
       imagePullSecrets:
         - name: "{{ .Values.image.pullSecret }}"

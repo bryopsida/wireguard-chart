@@ -2,6 +2,24 @@ image:
   repository: ghcr.io/bryopsida/wireguard
   tag: main
   pullPolicy: Always
+
+keygenJob:
+  image:
+    repository: ghcr.io/curium-rocks/wg-kubectl
+    tag: latest
+    pullPolicy: Always
+  podSecurityContext:
+    seccompProfile:
+      type: RuntimeDefault
+    fsGroup: 1000
+    fsGroupChangePolicy: Always
+  containerSecurityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    runAsNonRoot: true
+    privileged: false
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
 podAnnotations: {}
 labels: {}
 wireguard:
@@ -36,6 +54,8 @@ resources:
   limits:
     memory: 256Mi
     cpu: "100m"
+# -- Override the default runtime class of the container, if not provided `runc` will most likely be used
+runtimeClassName: ~
 deploymentStrategy:
   type: 'RollingUpdate'
   rollingUpdate:

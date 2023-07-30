@@ -91,12 +91,10 @@ spec:
   ttlSecondsAfterFinished: 60
   template:
     spec:
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
+      {{- include "wireguard.runtimeClass" . | indent 6 }}
       serviceAccountName: {{ .Release.Name }}-pre-install-job-sa
       restartPolicy: Never
+      securityContext: {{ .Values.keygenJob.podSecurityContext | toYaml | nindent 8 }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -114,8 +112,9 @@ spec:
           - name: script
             mountPath: /job/
         name: keygen-job
-        image: "ghcr.io/curium-rocks/wg-kubectl:latest"
-        imagePullPolicy: Always
+        image: "{{ .Values.keygenJob.image.repository }}:{{ .Values.keygenJob.image.tag }}"
+        imagePullPolicy: "{{ .Values.keygenJob.image.pullPolicy }}"
+        securityContext: {{ .Values.keygenJob.containerSecurityContext | toYaml | nindent 10 }}
         resources:
           requests:
             memory: 64Mi
