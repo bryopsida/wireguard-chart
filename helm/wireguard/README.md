@@ -1,6 +1,6 @@
 # wireguard
 
-![Version: 0.11.0](https://img.shields.io/badge/Version-0.11.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.12.0](https://img.shields.io/badge/Version-0.12.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm chart for managing a wireguard vpn in kubernetes
 
@@ -45,8 +45,9 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | securityContext.runAsNonRoot | bool | `true` |  |
 | securityContext.runAsUser | int | `1000` |  |
 | service.enabled | bool | `true` | Whether the service will be created or not |
+| service.nodePort | int | `31820` | Node port, only valid with service type: NodePort |
 | service.port | int | `51820` | Service port, default is 51820 UDP |
-| service.type | string | `"LoadBalancer"` | Service type, to keep internal to cluster use ClusterIP |
+| service.type | string | `"LoadBalancer"` | Service type, to keep internal to cluster use ClusterIP or NodePort |
 | volumeMounts | object | `{}` | Passthrough pod volume mounts |
 | volumes | object | `{}` | Passthrough pod volumes |
 | wireguard.clients | list | `[]` | A collection of clients that will be added to wg0.conf, accepts objects with keys PublicKey and AllowedIPs, stored in secret |

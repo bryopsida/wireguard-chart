@@ -20,7 +20,7 @@ securityContext:
 service:
   # -- Whether the service will be created or not
   enabled: true
-  # -- Service type, to keep internal to cluster use ClusterIP
+  # -- Service type, to keep internal to cluster use ClusterIP or NodePort
   type: LoadBalancer
   # -- Service port, default is 51820 UDP
   port: 51820
