@@ -89,8 +89,10 @@ spec:
           labelSelector:
             matchLabels:
               app: "{{ .Release.Name }}-wireguard"
+          {{- if semverCompare ">=1.27-0" .Capabilities.KubeVersion.GitVersion }}
           matchLabelKeys:
             - pod-template-hash
+          {{- end }}
       automountServiceAccountToken: false
       securityContext:
         fsGroup: {{ .Values.securityContext.runAsUser | default 1000 }}
