@@ -87,7 +87,8 @@ spec:
           topologyKey: kubernetes.io/hostname
           whenUnsatisfiable: ScheduleAnyway
           labelSelector:
-            app: "{{ .Release.Name }}-wireguard"
+            matchLabels:
+              app: "{{ .Release.Name }}-wireguard"
           matchLabelKeys:
             - pod-template-hash
       automountServiceAccountToken: false
