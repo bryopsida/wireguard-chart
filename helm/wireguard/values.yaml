@@ -1,3 +1,5 @@
+# -- Run as a DaemonSet instead of Deployment
+daemonSet: false
 image:
   repository: ghcr.io/bryopsida/wireguard
   tag: main
@@ -31,7 +33,7 @@ labels: {}
 wireguard:
   # -- Address of the VPN server
   serverAddress: 10.34.0.1/24
-  #  -- Subnet for your VPN, take care not to clash with cluster POD cidr
+  # -- Subnet for your VPN, take care not to clash with cluster POD cidr
   serverCidr: 10.34.0.0/24
   # -- A collection of clients that will be added to wg0.conf, accepts objects with keys PublicKey and AllowedIPs, stored in secret
   clients: []
@@ -63,7 +65,7 @@ resources:
 # -- Override the default runtime class of the container, if not provided `runc` will most likely be used
 runtimeClassName: ~
 deploymentStrategy:
-  type: 'RollingUpdate'
+  type: "RollingUpdate"
   rollingUpdate:
     maxUnavailable: 0
     maxSurge: 1
@@ -90,3 +92,25 @@ disableConfigManagement: false
 volumes: {}
 # -- Passthrough pod volume mounts
 volumeMounts: {}
+# -- Set pod affinity or antiAffinity
+affinity:
+  # nodeAffinity:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #     nodeSelectorTerms:
+  #     - matchExpressions:
+  #       - key: "example.com/vpn"
+  #         operator: Exists
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            app: "{{ .Release.Name }}-wireguard"
+            role: vpn
+        topologyKey: kubernetes.io/hostname
+# -- Set pod nodeSelector, a simplified version of affinity
+nodeSelector: {}
+  # example.com/vpn: ""
+# -- Set pod tolerations
+tolerations: []
+  # - effect: NoSchedule
+  #   operator: Exists
