@@ -20,4 +20,4 @@ clean:
 	helm --namespace $(HELM_NAMESPACE) del $(HELM_RELEASE_NAME)
 
 docs-update:
-	docker run --rm --volume "$$PWD:/helm-docs" jnorwood/helm-docs:latest
+	docker run --rm --volume "$$PWD:/helm-docs" --network host jnorwood/helm-docs:latest

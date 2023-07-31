@@ -1,6 +1,6 @@
 {{- define "execprobe" -}}
 exec:
-  command: 
+  command:
   - /bin/sh
   - -c
   - 'ip link show dev wg0 | grep -s up'
@@ -35,7 +35,11 @@ privileged: true
 
 ---
 apiVersion: apps/v1
+{{- if .Values.daemonSet }}
+kind: DaemonSet
+{{- else }}
 kind: Deployment
+{{- end }}
 metadata:
   name: "{{ .Release.Name }}-wireguard"
   labels:
@@ -45,15 +49,17 @@ metadata:
     {{ $key }}: {{ $value | quote }}
     {{- end }}
     {{- end }}
-    
+
 spec:
-  {{- if not .Values.autoscaling.enabled }}
+  {{- if and (not .Values.autoscaling.enabled) (not .Values.daemonSet) }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
       app: "{{ .Release.Name }}-wireguard"
+  {{- if not .Values.daemonSet }}
   strategy: {{ .Values.deploymentStrategy | toYaml | nindent 4 }}
+  {{- end }}
   template:
     metadata:
       annotations:
@@ -102,6 +108,17 @@ spec:
       {{- if .Values.image.pullSecret }}
       imagePullSecrets:
         - name: "{{ .Values.image.pullSecret }}"
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+        {{- $affinity := .Values.affinity | toYaml }}
+        {{ tpl $affinity . | nindent 8 | trim }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector: {{ .Values.nodeSelector | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations: {{ .Values.tolerations | toYaml | nindent 8 }}
       {{- end }}
       initContainers:
         - name: sysctls
