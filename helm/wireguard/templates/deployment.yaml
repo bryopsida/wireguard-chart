@@ -184,6 +184,65 @@ spec:
           {{- if .Values.volumeMounts }}
             {{- .Values.volumeMounts | toYaml | nindent 10 }}
           {{- end }}
+        {{- if .Values.metrics.enabled }}
+        - name: wireguard-exporter
+          image: "{{ .Values.metrics.image.repository }}:{{ .Values.metrics.image.tag }}"
+          imagePullPolicy: "{{ .Values.metrics.image.pullPolicy }}"
+          args:
+            - -a
+            {{- if .Values.metrics.extraEnv.PROMETHEUS_WIREGUARD_EXPORTER_PREPEND_SUDO_ENABLED }}
+            - "true"
+            {{- else }}
+            - "false"
+            {{- end }}
+          ports:
+          - containerPort: {{ .Values.metrics.service.port }}
+            protocol: TCP
+            name: exporter
+          env:
+          {{- range $key, $value := .Values.metrics.extraEnv }}
+          - name: {{ $key }}
+            value: {{ (tpl $value $) | quote }}
+          {{- end }}
+          - name: PROMETHEUS_WIREGUARD_EXPORTER_PORT
+            value: "{{ .Values.metrics.service.port }}"
+          securityContext: {{ include "wg.securitycontext" . | nindent 12 }}
+          resources: {{ .Values.resources | toYaml | nindent 12 }}
+          startupProbe:
+            httpGet:
+              path: /metrics
+              port: {{ .Values.metrics.service.port }}
+            periodSeconds: 2
+            failureThreshold: 15
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: {{ .Values.metrics.service.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: {{ .Values.metrics.service.port }}
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          volumeMounts:
+          - name: run
+            mountPath: /run
+          {{- if not .Values.disableConfigManagement }}
+          - name: config
+            mountPath: /etc/wireguard/wg0.conf
+            subPath: {{ .Values.configSecretProperty | quote }}
+          {{- end }}
+          {{- if not .Values.disablePrivateKeyManagement }}
+          - name: privatekey
+            mountPath: /etc/wireguard/privatekey
+            subPath: privatekey
+          {{- end }}
+          {{- if .Values.volumeMounts }}
+            {{- .Values.volumeMounts | toYaml | nindent 10 }}
+          {{- end }}
+        {{- end }}
       volumes:
       - name: run
         emptyDir: {}

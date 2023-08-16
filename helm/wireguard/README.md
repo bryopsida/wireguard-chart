@@ -1,6 +1,6 @@
 # wireguard
 
-![Version: 0.14.0](https://img.shields.io/badge/Version-0.14.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.15.0](https://img.shields.io/badge/Version-0.15.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm chart for managing a wireguard vpn in kubernetes
 
@@ -49,6 +49,30 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | keygenJob.podSecurityContext.fsGroupChangePolicy | string | `"Always"` |  |
 | keygenJob.podSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
 | labels | object | `{}` |  |
+| metrics.enabled | bool | `true` | Enable exposing Wireguard metrics |
+| metrics.extraEnv | object | `{"EXPORT_LATEST_HANDSHAKE_DELAY":"true","PROMETHEUS_WIREGUARD_EXPORTER_ADDRESS":"0.0.0.0","PROMETHEUS_WIREGUARD_EXPORTER_CONFIG_FILE_NAMES":"/etc/wireguard/{{ .Values.configSecretProperty }}","PROMETHEUS_WIREGUARD_EXPORTER_EXPORT_REMOTE_IP_AND_PORT_ENABLED":"true","PROMETHEUS_WIREGUARD_EXPORTER_INTERFACES":"all","PROMETHEUS_WIREGUARD_EXPORTER_PREPEND_SUDO_ENABLED":"false","PROMETHEUS_WIREGUARD_EXPORTER_SEPARATE_ALLOWED_IPS_ENABLED":"true","PROMETHEUS_WIREGUARD_EXPORTER_VERBOSE_ENABLED":"false"}` | Wireguard Exporter environment variables. See https://mindflavor.github.io/prometheus_wireguard_exporter |
+| metrics.image | object | `{"pullPolicy":"IfNotPresent","repository":"docker.io/mindflavor/prometheus-wireguard-exporter","tag":"3.6.6"}` | Wireguard Exporter image |
+| metrics.prometheusRule.annotations | object | `{}` | Annotations |
+| metrics.prometheusRule.enabled | bool | `false` | Create PrometheusRule Resource for scraping metrics using PrometheusOperator |
+| metrics.prometheusRule.groups | list | `[]` | Groups, containing the alert rules. Example:   groups:     - name: Wireguard       rules:         - alert: WireguardInstanceNotAvailable           annotations:             message: "Wireguard instance in namespace {{ `{{` }} $labels.namespace {{ `}}` }} has not been available for the last 5 minutes."           expr: |             absent(kube_pod_status_ready{namespace="{{ include "common.names.namespace" . }}", condition="true"} * on (pod) kube_pod_labels{pod=~"{{ include "common.names.fullname" . }}-\\d+", namespace="{{ include "common.names.namespace" . }}"}) != 0           for: 5m           labels:             severity: critical |
+| metrics.prometheusRule.labels | object | `{}` | Additional labels that can be used so PrometheusRule will be discovered by Prometheus |
+| metrics.prometheusRule.namespace | string | `""` | Namespace of the ServiceMonitor. If empty, current namespace is used |
+| metrics.service.annotations | object | `{}` | Annotations for enabling prometheus to access the metrics endpoints |
+| metrics.service.labels | object | `{}` | Additional service labels |
+| metrics.service.port | int | `9586` | Metrics service HTTP port |
+| metrics.serviceMonitor.annotations | object | `{}` | Annotations |
+| metrics.serviceMonitor.enabled | bool | `true` | Create ServiceMonitor Resource for scraping metrics using PrometheusOperator |
+| metrics.serviceMonitor.honorLabels | bool | `false` | honorLabels chooses the metric's labels on collisions with target labels |
+| metrics.serviceMonitor.interval | string | `"30s"` | Interval at which metrics should be scraped |
+| metrics.serviceMonitor.jobLabel | string | `""` | The name of the label on the target service to use as the job name in prometheus. |
+| metrics.serviceMonitor.labels | object | `{}` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus |
+| metrics.serviceMonitor.metricRelabelings | list | `[]` | MetricRelabelConfigs to apply to samples before ingestion |
+| metrics.serviceMonitor.namespace | string | `""` | Namespace of the ServiceMonitor. If empty, current namespace is used |
+| metrics.serviceMonitor.path | string | `"/metrics"` | The endpoint configuration of the ServiceMonitor. Path is mandatory. Interval, timeout and relabelings can be overwritten. |
+| metrics.serviceMonitor.port | string | `"exporter"` | Metrics service HTTP port |
+| metrics.serviceMonitor.relabelings | list | `[]` | RelabelConfigs to apply to samples before scraping |
+| metrics.serviceMonitor.scrapeTimeout | string | `""` | Specify the timeout after which the scrape is ended e.g:   scrapeTimeout: 30s |
+| metrics.serviceMonitor.selector | object | `{}` | Prometheus instance selector labels ref: https://github.com/bitnami/charts/tree/main/bitnami/prometheus-operator#prometheus-configuration |
 | nodeSelector | object | `{}` | Set pod nodeSelector, a simplified version of affinity |
 | podAnnotations | object | `{}` |  |
 | replicaCount | int | `3` |  |
