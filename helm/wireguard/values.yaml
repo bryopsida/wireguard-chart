@@ -118,21 +118,29 @@ tolerations: []
 ## Metrics configuration
 metrics:
   # -- Enable exposing Wireguard metrics
-  enabled: true
+  enabled: false
   # -- Wireguard Exporter image
   image:
     repository: docker.io/mindflavor/prometheus-wireguard-exporter
     tag: 3.6.6
     pullPolicy: IfNotPresent
-  # -- Wireguard Exporter environment variables. See https://mindflavor.github.io/prometheus_wireguard_exporter
+  # @params -- Wireguard Exporter environment variables. See https://mindflavor.github.io/prometheus_wireguard_exporter
   extraEnv:
+    # -- Enable verbose mode
     PROMETHEUS_WIREGUARD_EXPORTER_VERBOSE_ENABLED: "false"
+    # -- Prepends sudo to wg commands
     PROMETHEUS_WIREGUARD_EXPORTER_PREPEND_SUDO_ENABLED: "false"
+    # -- Specify the service address. This is the address your Prometheus instance should point to
     PROMETHEUS_WIREGUARD_EXPORTER_ADDRESS: "0.0.0.0"
+    # -- This flag adds the friendly_name attribute or the friendly_json attributes to the exported entries. See [Friendly tags](https://mindflavor.github.io/prometheus_wireguard_exporter/#friendly-tags) for more details. Multiple files are allowed (they will be merged as a single file in memory so avoid duplicates)
     PROMETHEUS_WIREGUARD_EXPORTER_CONFIG_FILE_NAMES: "/etc/wireguard/{{ .Values.configSecretProperty }}"
+    # -- Enable the allowed ip + subnet split mode for the labels
     PROMETHEUS_WIREGUARD_EXPORTER_SEPARATE_ALLOWED_IPS_ENABLED: "true"
+    # -- Exports peer’s remote ip and port as labels (if available)
     PROMETHEUS_WIREGUARD_EXPORTER_EXPORT_REMOTE_IP_AND_PORT_ENABLED: "true"
+    # -- Specifies the interface(s) passed to the wg show <interface> dump parameter. Multiple parameters are allowed
     PROMETHEUS_WIREGUARD_EXPORTER_INTERFACES: "all"
+    # -- Adds the wireguard_latest_handshake_delay_seconds metric that automatically calculates the seconds passed since the last handshake
     EXPORT_LATEST_HANDSHAKE_DELAY: "true"
   ## Wireguard metrics service parameters
   service:

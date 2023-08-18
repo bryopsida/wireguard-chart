@@ -49,8 +49,15 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | keygenJob.podSecurityContext.fsGroupChangePolicy | string | `"Always"` |  |
 | keygenJob.podSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
 | labels | object | `{}` |  |
-| metrics.enabled | bool | `true` | Enable exposing Wireguard metrics |
-| metrics.extraEnv | object | `{"EXPORT_LATEST_HANDSHAKE_DELAY":"true","PROMETHEUS_WIREGUARD_EXPORTER_ADDRESS":"0.0.0.0","PROMETHEUS_WIREGUARD_EXPORTER_CONFIG_FILE_NAMES":"/etc/wireguard/{{ .Values.configSecretProperty }}","PROMETHEUS_WIREGUARD_EXPORTER_EXPORT_REMOTE_IP_AND_PORT_ENABLED":"true","PROMETHEUS_WIREGUARD_EXPORTER_INTERFACES":"all","PROMETHEUS_WIREGUARD_EXPORTER_PREPEND_SUDO_ENABLED":"false","PROMETHEUS_WIREGUARD_EXPORTER_SEPARATE_ALLOWED_IPS_ENABLED":"true","PROMETHEUS_WIREGUARD_EXPORTER_VERBOSE_ENABLED":"false"}` | Wireguard Exporter environment variables. See https://mindflavor.github.io/prometheus_wireguard_exporter |
+| metrics.enabled | bool | `false` | Enable exposing Wireguard metrics |
+| metrics.extraEnv.EXPORT_LATEST_HANDSHAKE_DELAY | string | `"true"` | Adds the wireguard_latest_handshake_delay_seconds metric that automatically calculates the seconds passed since the last handshake |
+| metrics.extraEnv.PROMETHEUS_WIREGUARD_EXPORTER_ADDRESS | string | `"0.0.0.0"` | Specify the service address. This is the address your Prometheus instance should point to |
+| metrics.extraEnv.PROMETHEUS_WIREGUARD_EXPORTER_CONFIG_FILE_NAMES | string | `"/etc/wireguard/{{ .Values.configSecretProperty }}"` | This flag adds the friendly_name attribute or the friendly_json attributes to the exported entries. See [Friendly tags](https://mindflavor.github.io/prometheus_wireguard_exporter/#friendly-tags) for more details. Multiple files are allowed (they will be merged as a single file in memory so avoid duplicates) |
+| metrics.extraEnv.PROMETHEUS_WIREGUARD_EXPORTER_EXPORT_REMOTE_IP_AND_PORT_ENABLED | string | `"true"` | Exports peer’s remote ip and port as labels (if available) |
+| metrics.extraEnv.PROMETHEUS_WIREGUARD_EXPORTER_INTERFACES | string | `"all"` | Specifies the interface(s) passed to the wg show <interface> dump parameter. Multiple parameters are allowed |
+| metrics.extraEnv.PROMETHEUS_WIREGUARD_EXPORTER_PREPEND_SUDO_ENABLED | string | `"false"` | Prepends sudo to wg commands |
+| metrics.extraEnv.PROMETHEUS_WIREGUARD_EXPORTER_SEPARATE_ALLOWED_IPS_ENABLED | string | `"true"` | Enable the allowed ip + subnet split mode for the labels |
+| metrics.extraEnv.PROMETHEUS_WIREGUARD_EXPORTER_VERBOSE_ENABLED | string | `"false"` | Enable verbose mode |
 | metrics.image | object | `{"pullPolicy":"IfNotPresent","repository":"docker.io/mindflavor/prometheus-wireguard-exporter","tag":"3.6.6"}` | Wireguard Exporter image |
 | metrics.prometheusRule.annotations | object | `{}` | Annotations |
 | metrics.prometheusRule.enabled | bool | `false` | Create PrometheusRule Resource for scraping metrics using PrometheusOperator |
