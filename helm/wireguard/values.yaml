@@ -114,3 +114,94 @@ nodeSelector: {}
 tolerations: []
   # - effect: NoSchedule
   #   operator: Exists
+
+## Metrics configuration
+metrics:
+  # -- Enable exposing Wireguard metrics
+  enabled: false
+  # -- Wireguard Exporter image
+  image:
+    repository: docker.io/mindflavor/prometheus-wireguard-exporter
+    tag: 3.6.6
+    pullPolicy: IfNotPresent
+  # @params -- Wireguard Exporter environment variables. See https://mindflavor.github.io/prometheus_wireguard_exporter
+  extraEnv:
+    # -- Enable verbose mode
+    PROMETHEUS_WIREGUARD_EXPORTER_VERBOSE_ENABLED: "false"
+    # -- Prepends sudo to wg commands
+    PROMETHEUS_WIREGUARD_EXPORTER_PREPEND_SUDO_ENABLED: "false"
+    # -- Specify the service address. This is the address your Prometheus instance should point to
+    PROMETHEUS_WIREGUARD_EXPORTER_ADDRESS: "0.0.0.0"
+    # -- This flag adds the friendly_name attribute or the friendly_json attributes to the exported entries. See [Friendly tags](https://mindflavor.github.io/prometheus_wireguard_exporter/#friendly-tags) for more details. Multiple files are allowed (they will be merged as a single file in memory so avoid duplicates)
+    PROMETHEUS_WIREGUARD_EXPORTER_CONFIG_FILE_NAMES: "/etc/wireguard/{{ .Values.configSecretProperty }}"
+    # -- Enable the allowed ip + subnet split mode for the labels
+    PROMETHEUS_WIREGUARD_EXPORTER_SEPARATE_ALLOWED_IPS_ENABLED: "true"
+    # -- Exports peer’s remote ip and port as labels (if available)
+    PROMETHEUS_WIREGUARD_EXPORTER_EXPORT_REMOTE_IP_AND_PORT_ENABLED: "true"
+    # -- Specifies the interface(s) passed to the wg show <interface> dump parameter. Multiple parameters are allowed
+    PROMETHEUS_WIREGUARD_EXPORTER_INTERFACES: "all"
+    # -- Adds the wireguard_latest_handshake_delay_seconds metric that automatically calculates the seconds passed since the last handshake
+    EXPORT_LATEST_HANDSHAKE_DELAY: "true"
+  ## Wireguard metrics service parameters
+  service:
+    # -- Metrics service HTTP port
+    port: 9586
+    # -- Additional service labels
+    labels: {}
+    # -- Annotations for enabling prometheus to access the metrics endpoints
+    annotations: {}
+  ## Prometheus Operator ServiceMonitor configuration
+  serviceMonitor:
+    # -- Create ServiceMonitor Resource for scraping metrics using PrometheusOperator
+    enabled: true
+    # -- Metrics service HTTP port
+    port: exporter
+    # -- The endpoint configuration of the ServiceMonitor. Path is mandatory. Interval, timeout and relabelings can be overwritten.
+    path: "/metrics"
+    # -- Namespace of the ServiceMonitor. If empty, current namespace is used
+    namespace: ""
+    # -- Interval at which metrics should be scraped
+    interval: 30s
+    # -- Specify the timeout after which the scrape is ended
+    # e.g:
+    #   scrapeTimeout: 30s
+    scrapeTimeout: ""
+    # -- Additional labels that can be used so ServiceMonitor will be discovered by Prometheus
+    labels: {}
+    # -- Annotations
+    annotations: {}
+    # -- Prometheus instance selector labels
+    # ref: https://github.com/bitnami/charts/tree/main/bitnami/prometheus-operator#prometheus-configuration
+    selector: {}
+    # -- RelabelConfigs to apply to samples before scraping
+    relabelings: []
+    # -- MetricRelabelConfigs to apply to samples before ingestion
+    metricRelabelings: []
+    # -- honorLabels chooses the metric's labels on collisions with target labels
+    honorLabels: false
+    # -- The name of the label on the target service to use as the job name in prometheus.
+    jobLabel: ""
+  ## Prometheus Operator alert rules configuration
+  prometheusRule:
+    # -- Create PrometheusRule Resource for scraping metrics using PrometheusOperator
+    enabled: false
+    # -- Namespace of the ServiceMonitor. If empty, current namespace is used
+    namespace: ""
+    # -- Additional labels that can be used so PrometheusRule will be discovered by Prometheus
+    labels: {}
+    # -- Annotations
+    annotations: {}
+    # -- Groups, containing the alert rules.
+    # Example:
+    #   groups:
+    #     - name: Wireguard
+    #       rules:
+    #         - alert: WireguardInstanceNotAvailable
+    #           annotations:
+    #             message: "Wireguard instance in namespace {{ `{{` }} $labels.namespace {{ `}}` }} has not been available for the last 5 minutes."
+    #           expr: |
+    #             absent(kube_pod_status_ready{namespace="{{ include "common.names.namespace" . }}", condition="true"} * on (pod) kube_pod_labels{pod=~"{{ include "common.names.fullname" . }}-\\d+", namespace="{{ include "common.names.namespace" . }}"}) != 0
+    #           for: 5m
+    #           labels:
+    #             severity: critical
+    groups: []

@@ -1,0 +1,20 @@
+{{- if and .Values.metrics.enabled .Values.metrics.prometheusRule.enabled .Values.metrics.prometheusRule.groups }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ .Release.Name }}-wireguard
+  {{- if .Values.metrics.serviceMonitor.namespace }}
+  namespace: {{ .Values.metrics.serviceMonitor.namespace }}
+  {{- end }}
+  labels:
+    app: "{{.Release.Name }}-wireguard"
+    {{- if .Values.metrics.serviceMonitor.labels }}
+    {{- toYaml .Values.metrics.serviceMonitor.labels | nindent 4 }}
+    {{- end }}
+  {{- if .Values.metrics.serviceMonitor.annotations }}
+  annotations:
+    {{- toYaml .Values.metrics.serviceMonitor.annotations | nindent 4 }}
+  {{- end }}
+spec:
+  groups: {{- toYaml .Values.metrics.prometheusRule.groups | nindent 4 }}
+{{- end }}

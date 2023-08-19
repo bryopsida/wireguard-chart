@@ -1,0 +1,47 @@
+{{- if and .Values.metrics.enabled .Values.metrics.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: "{{.Release.Name }}-wireguard"
+  {{- if .Values.metrics.serviceMonitor.namespace }}
+  namespace: {{ .Values.metrics.serviceMonitor.namespace }}
+  {{- end }}
+  labels:
+    app: "{{.Release.Name }}-wireguard"
+    {{- if .Values.metrics.serviceMonitor.labels }}
+    {{- toYaml .Values.metrics.serviceMonitor.labels | nindent 4 }}
+    {{- end }}
+  {{- if .Values.metrics.serviceMonitor.annotations }}
+  annotations:
+    {{- toYaml .Values.metrics.serviceMonitor.annotations | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.metrics.serviceMonitor.jobLabel }}
+  jobLabel: {{ .Values.metrics.serviceMonitor.jobLabel }}
+  {{- end }}
+  endpoints:
+    - port: exporter
+      path: {{ .Values.metrics.serviceMonitor.path }}
+      {{- if .Values.metrics.serviceMonitor.interval }}
+      interval: {{ .Values.metrics.serviceMonitor.interval }}
+      {{- end }}
+      {{- if .Values.metrics.serviceMonitor.scrapeTimeout }}
+      scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
+      {{- end }}
+      {{- if .Values.metrics.serviceMonitor.relabelings }}
+      relabelings: {{ toYaml .Values.metrics.serviceMonitor.relabelings | nindent 8 }}
+      {{- end }}
+      {{- if .Values.metrics.serviceMonitor.metricRelabelings }}
+      metricRelabelings: {{ toYaml .Values.metrics.serviceMonitor.metricRelabelings | nindent 8 }}
+      {{- end }}
+      {{- if .Values.metrics.serviceMonitor.honorLabels }}
+      honorLabels: {{ .Values.metrics.serviceMonitor.honorLabels }}
+      {{- end }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace | quote }}
+  selector:
+    matchLabels:
+      app: "{{ .Release.Name }}-exporter-wireguard"
+      app.kubernetes.io/component: metrics
+{{- end }}
