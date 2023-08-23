@@ -35,8 +35,14 @@ wireguard:
   serverAddress: 10.34.0.1/24
   # -- Subnet for your VPN, take care not to clash with cluster POD cidr
   serverCidr: 10.34.0.0/24
-  # -- A collection of clients that will be added to wg0.conf, accepts objects with keys PublicKey and AllowedIPs, stored in secret
+  # -- A collection of clients that will be added to wg0.conf, accepts objects with keys PublicKey and AllowedIPs (mandatory) and optional FriendlyName or FriendlyJson (https://github.com/MindFlavor/prometheus_wireguard_exporter#friendly-tags), stored in secret
   clients: []
+    # - FriendlyName: username1
+    #   ## FriendlyJson will override FriendlyName
+    #   # FriendlyJson:
+    #   #   username: "username1"
+    #   AllowedIPs: 10.34.0.1.101/32
+    #   PublicKey: QTxoajwVHWZ7qqVwY2F9T1L04M0j5GSNC15++LZw1iA=
 securityContext:
   runAsNonRoot: true
   runAsUser: 1000

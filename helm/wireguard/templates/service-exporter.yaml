@@ -2,7 +2,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: "{{.Release.Name }}-exporter-wireguard"
+  name: "{{ .Release.Name }}-exporter-wireguard"
   labels:
     app: "{{ .Release.Name }}-exporter-wireguard"
     app.kubernetes.io/component: metrics
@@ -22,5 +22,5 @@ spec:
     port: {{ .Values.metrics.service.port }}
     targetPort: {{ .Values.metrics.service.port }}
   selector:
-    app: "{{ .Release.Name }}-wireguard"
+    app: "{{ .Release.Name }}-exporter-wireguard"
 {{- end }}
