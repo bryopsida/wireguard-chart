@@ -99,3 +99,16 @@ couchdb-couchdb.couchdb.svc.cluster.local. 5 IN	A <redacted>
 ```
 
 If you are using something like cilium and have access to hubble you can verify the network flows there as well.
+
+
+## Prometheus Metrics
+
+```yaml
+metrics:
+  enabled: true
+```
+
+- Adds another container with [prometheus_wireguard_exporter](https://github.com/MindFlavor/prometheus_wireguard_exporter)
+- Installs a Prometheus ServiceMonitor to scrape metrics from the wireguard server
+- Deploys a Grafana dashboard:
+  ![Grafana Dashboard](dashboard-screenshot.png)
