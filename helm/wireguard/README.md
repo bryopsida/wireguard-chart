@@ -49,6 +49,9 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | keygenJob.podSecurityContext.fsGroupChangePolicy | string | `"Always"` |  |
 | keygenJob.podSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
 | labels | object | `{}` |  |
+| metrics.dashboard.annotations | object | `{}` | Grafana dashboard annotations |
+| metrics.dashboard.enabled | bool | `true` | Create a ConfigMap with a Grafana dashboard |
+| metrics.dashboard.labels | object | `{"grafana_dashboard":"1"}` | Grafana dashboard labels |
 | metrics.enabled | bool | `false` | Enable exposing Wireguard metrics |
 | metrics.extraEnv.EXPORT_LATEST_HANDSHAKE_DELAY | string | `"true"` | Adds the wireguard_latest_handshake_delay_seconds metric that automatically calculates the seconds passed since the last handshake |
 | metrics.extraEnv.PROMETHEUS_WIREGUARD_EXPORTER_ADDRESS | string | `"0.0.0.0"` | Specify the service address. This is the address your Prometheus instance should point to |

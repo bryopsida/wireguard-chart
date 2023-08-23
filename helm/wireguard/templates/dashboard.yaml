@@ -1,0 +1,17 @@
+{{- if and .Values.metrics.enabled .Values.metrics.dashboard.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ .Release.Name }}-dashboard"
+{{- if .Values.metrics.dashboard.labels }}
+  labels:
+    {{ toYaml .Values.metrics.dashboard.labels | indent 4 }}
+{{- end }}
+{{- if .Values.metrics.dashboard.annotations }}
+  annotations:
+    {{ toYaml .Values.metrics.dashboard.annotations | indent 4 }}
+{{- end }}
+data:
+  wireguard.json: |-
+    {{- .Files.Get "files/dashboard.json" | nindent 4 }}
+{{- end }}

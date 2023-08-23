@@ -211,3 +211,12 @@ metrics:
     #           labels:
     #             severity: critical
     groups: []
+  dashboard:
+    # -- Create a ConfigMap with a Grafana dashboard
+    enabled: true
+    # -- Grafana dashboard labels
+    labels:
+      grafana_dashboard: "1"
+    # -- Grafana dashboard annotations
+    annotations: {}
+      # k8s-sidecar-target-directory: /tmp/dashboards/Other
