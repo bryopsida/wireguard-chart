@@ -42,6 +42,6 @@ spec:
       - {{ .Release.Namespace | quote }}
   selector:
     matchLabels:
-      app: "{{ .Release.Name }}-exporter-wireguard"
+      app: "{{ .Release.Name }}-wireguard"
       app.kubernetes.io/component: metrics
 {{- end }}

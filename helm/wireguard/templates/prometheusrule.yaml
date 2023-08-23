@@ -7,7 +7,7 @@ metadata:
   namespace: {{ .Values.metrics.serviceMonitor.namespace }}
   {{- end }}
   labels:
-    app: "{{.Release.Name }}-wireguard"
+    app: "{{ .Release.Name }}-wireguard"
     {{- if .Values.metrics.serviceMonitor.labels }}
     {{- toYaml .Values.metrics.serviceMonitor.labels | nindent 4 }}
     {{- end }}
