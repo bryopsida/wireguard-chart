@@ -1,6 +1,6 @@
 # wireguard
 
-![Version: 0.15.0](https://img.shields.io/badge/Version-0.15.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.16.0](https://img.shields.io/badge/Version-0.16.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm chart for managing a wireguard vpn in kubernetes
 
@@ -49,6 +49,9 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | keygenJob.podSecurityContext.fsGroupChangePolicy | string | `"Always"` |  |
 | keygenJob.podSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
 | labels | object | `{}` |  |
+| metrics.dashboard.annotations | object | `{}` | Grafana dashboard annotations |
+| metrics.dashboard.enabled | bool | `true` | Create a ConfigMap with a Grafana dashboard |
+| metrics.dashboard.labels | object | `{"grafana_dashboard":"1"}` | Grafana dashboard labels |
 | metrics.enabled | bool | `false` | Enable exposing Wireguard metrics |
 | metrics.extraEnv.EXPORT_LATEST_HANDSHAKE_DELAY | string | `"true"` | Adds the wireguard_latest_handshake_delay_seconds metric that automatically calculates the seconds passed since the last handshake |
 | metrics.extraEnv.PROMETHEUS_WIREGUARD_EXPORTER_ADDRESS | string | `"0.0.0.0"` | Specify the service address. This is the address your Prometheus instance should point to |
@@ -101,7 +104,7 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | tolerations | list | `[]` | Set pod tolerations |
 | volumeMounts | object | `{}` | Passthrough pod volume mounts |
 | volumes | object | `{}` | Passthrough pod volumes |
-| wireguard.clients | list | `[]` | A collection of clients that will be added to wg0.conf, accepts objects with keys PublicKey and AllowedIPs, stored in secret |
+| wireguard.clients | list | `[]` | A collection of clients that will be added to wg0.conf, accepts objects with keys PublicKey and AllowedIPs (mandatory) and optional FriendlyName or FriendlyJson (https://github.com/MindFlavor/prometheus_wireguard_exporter#friendly-tags), stored in secret |
 | wireguard.serverAddress | string | `"10.34.0.1/24"` | Address of the VPN server |
 | wireguard.serverCidr | string | `"10.34.0.0/24"` | Subnet for your VPN, take care not to clash with cluster POD cidr |
 

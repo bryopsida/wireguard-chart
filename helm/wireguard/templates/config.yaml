@@ -8,6 +8,12 @@ PostDown = iptables -t nat -D POSTROUTING -s {{ .Values.wireguard.serverCidr }} 
 # Clients
 {{- range .Values.wireguard.clients }}
 [Peer]
+{{- if .FriendlyName }}
+# friendly_name = {{ .FriendlyName }}
+{{- end }}
+{{- if .FriendlyJson }}
+# friendly_json = {{ .FriendlyJson | toJson }}
+{{- end }}
 PublicKey = {{ .PublicKey }}
 AllowedIPs = {{ .AllowedIPs }}
 {{- if .PresharedKey }}

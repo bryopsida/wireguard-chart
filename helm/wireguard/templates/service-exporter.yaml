@@ -2,7 +2,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: "{{.Release.Name }}-exporter-wireguard"
+  name: "{{ .Release.Name }}-exporter-wireguard"
   labels:
     app: "{{ .Release.Name }}-exporter-wireguard"
     app.kubernetes.io/component: metrics
