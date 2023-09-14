@@ -41,7 +41,7 @@ wireguard:
     #   ## FriendlyJson will override FriendlyName
     #   # FriendlyJson:
     #   #   username: "username1"
-    #   AllowedIPs: 10.34.0.1.101/32
+    #   AllowedIPs: 10.34.0.101/32
     #   PublicKey: QTxoajwVHWZ7qqVwY2F9T1L04M0j5GSNC15++LZw1iA=
 securityContext:
   runAsNonRoot: true
