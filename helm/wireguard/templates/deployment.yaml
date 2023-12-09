@@ -58,7 +58,12 @@ spec:
     matchLabels:
       app: "{{ .Release.Name }}-wireguard"
   {{- if not .Values.daemonSet }}
+  {{- if eq .Values.deploymentStrategy.type "RollingUpdate" }}
   strategy: {{ .Values.deploymentStrategy | toYaml | nindent 4 }}
+  {{- else }}
+  strategy:
+    type: {{ .Values.deploymentStrategy.type }}
+  {{- end }}
   {{- end }}
   template:
     metadata:
