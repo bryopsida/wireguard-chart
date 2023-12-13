@@ -148,6 +148,9 @@ spec:
           - containerPort: 51820
             protocol: UDP
             name: wireguard
+            {{- if .Values.useHostPort }}
+            hostPort: {{ .Values.hostPort }}
+            {{- end }}
           env:
           - name: LOG_LEVEL
             value: {{ default "info" .Values.logLevel }}
