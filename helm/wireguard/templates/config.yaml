@@ -1,4 +1,5 @@
 {{- define "wg-config-template" -}}
+{{- $natSourceNetOption := .Values.wireguard.natAddSourceNet | ternary (printf "%s %s" "-s" .Values.wireguard.serverCidr) ("") -}}
 [Interface]
 Address = {{ .Values.wireguard.serverAddress }}
 ListenPort = 51820
