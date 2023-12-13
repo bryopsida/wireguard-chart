@@ -39,6 +39,8 @@ wireguard:
   serverAddress: 10.34.0.1/24
   # -- Subnet for your VPN, take care not to clash with cluster POD cidr
   serverCidr: 10.34.0.0/24
+  # -- Add the serverCidr to the nat source net option
+  natAddSourceNet: true
   # -- A collection of clients that will be added to wg0.conf, accepts objects with keys PublicKey and AllowedIPs (mandatory) and optional FriendlyName or FriendlyJson (https://github.com/MindFlavor/prometheus_wireguard_exporter#friendly-tags), stored in secret
   clients: []
     # - FriendlyName: username1

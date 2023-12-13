@@ -1,9 +1,10 @@
 {{- define "wg-config-template" -}}
+{{- $natSourceNetOption := .Values.wireguard.natAddSourceNet | ternary (printf "%s %s" "-s" .Values.wireguard.serverCidr) ("") -}}
 [Interface]
 Address = {{ .Values.wireguard.serverAddress }}
 ListenPort = 51820
-PostUp = wg set wg0 private-key /etc/wireguard/privatekey && iptables -t nat -A POSTROUTING -s {{ .Values.wireguard.serverCidr }} -o eth0 -j MASQUERADE
-PostDown = iptables -t nat -D POSTROUTING -s {{ .Values.wireguard.serverCidr }} -o eth0 -j MASQUERADE
+PostUp = wg set wg0 private-key /etc/wireguard/privatekey && iptables -t nat -A POSTROUTING {{ $natSourceNetOption }} -o eth0 -j MASQUERADE
+PostDown = iptables -t nat -D POSTROUTING -s {{ $natSourceNetOption }} -o eth0 -j MASQUERADE
 
 # Clients
 {{- range .Values.wireguard.clients }}
