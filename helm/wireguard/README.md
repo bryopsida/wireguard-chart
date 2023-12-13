@@ -1,6 +1,6 @@
 # wireguard
 
-![Version: 0.16.2](https://img.shields.io/badge/Version-0.16.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.17.0](https://img.shields.io/badge/Version-0.17.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm chart for managing a wireguard vpn in kubernetes
 
@@ -30,6 +30,7 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | disruptionBudget.enabled | bool | `true` |  |
 | disruptionBudget.minAvailable | int | `2` |  |
 | extraEnv | object | `{}` | Provide additional environment variables to the wireguard container |
+| hostPort | int | `51820` | Host port to expose the VPN service on |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"ghcr.io/bryopsida/wireguard"` |  |
 | image.tag | string | `"main"` |  |
@@ -102,6 +103,7 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | service.port | int | `51820` | Service port, default is 51820 UDP |
 | service.type | string | `"LoadBalancer"` | Service type, to keep internal to cluster use ClusterIP or NodePort |
 | tolerations | list | `[]` | Set pod tolerations |
+| useHostPort | bool | `false` | Expose VPN service on hostPort |
 | volumeMounts | object | `{}` | Passthrough pod volume mounts |
 | volumes | object | `{}` | Passthrough pod volumes |
 | wireguard.clients | list | `[]` | A collection of clients that will be added to wg0.conf, accepts objects with keys PublicKey and AllowedIPs (mandatory) and optional FriendlyName or FriendlyJson (https://github.com/MindFlavor/prometheus_wireguard_exporter#friendly-tags), stored in secret |

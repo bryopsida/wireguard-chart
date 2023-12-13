@@ -30,6 +30,10 @@ keygenJob:
   extraEnv: {}
 podAnnotations: {}
 labels: {}
+# -- Expose VPN service on hostPort
+useHostPort: false
+# -- Host port to expose the VPN service on
+hostPort: 51820
 wireguard:
   # -- Address of the VPN server
   serverAddress: 10.34.0.1/24
