@@ -20,6 +20,9 @@ AllowedIPs = {{ .AllowedIPs }}
 {{- if .PresharedKey }}
 PresharedKey = {{ .PresharedKey }}
 {{- end }}
+{{- if .PersistentKeepalive }}
+PersistentKeepalive = {{ .PersistentKeepalive }}
+{{- end }}
 
 {{- end }}
 # End Clients
