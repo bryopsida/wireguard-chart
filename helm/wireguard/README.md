@@ -106,7 +106,7 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | useHostPort | bool | `false` | Expose VPN service on hostPort |
 | volumeMounts | object | `{}` | Passthrough pod volume mounts |
 | volumes | object | `{}` | Passthrough pod volumes |
-| wireguard.clients | list | `[]` | A collection of clients that will be added to wg0.conf, accepts objects with keys PublicKey and AllowedIPs (mandatory) and optional FriendlyName or FriendlyJson (https://github.com/MindFlavor/prometheus_wireguard_exporter#friendly-tags), stored in secret |
+| wireguard.clients | list | `[]` | A collection of clients that will be added to wg0.conf, accepts objects with keys PublicKey and AllowedIPs (mandatory) and optional FriendlyName or FriendlyJson (https://github.com/MindFlavor/prometheus_wireguard_exporter#friendly-tags) and PersistentKeepalive (https://www.wireguard.com/quickstart/#nat-and-firewall-traversal-persistence), stored in secret |
 | wireguard.natAddSourceNet | bool | `true` | Add the serverCidr to the nat source net option |
 | wireguard.serverAddress | string | `"10.34.0.1/24"` | Address of the VPN server |
 | wireguard.serverCidr | string | `"10.34.0.0/24"` | Subnet for your VPN, take care not to clash with cluster POD cidr |

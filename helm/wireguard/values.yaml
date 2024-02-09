@@ -49,6 +49,8 @@ wireguard:
     #   #   username: "username1"
     #   AllowedIPs: 10.34.0.101/32
     #   PublicKey: QTxoajwVHWZ7qqVwY2F9T1L04M0j5GSNC15++LZw1iA=
+    #   # Normally PersistentKeepalive is not required
+    #   #PersistentKeepalive: 25
 securityContext:
   runAsNonRoot: true
   runAsUser: 1000
