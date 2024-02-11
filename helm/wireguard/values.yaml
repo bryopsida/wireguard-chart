@@ -268,7 +268,7 @@ healthSideCar:
     type: NodePort
     # -- The port for the service exposed on each node
     nodePort: 31313
-  # -- When enabled the container will define a host port, in most cases this should only be used when deploying with daemonSet: true 
+  # -- When enabled the container will define a host port, in most cases this should only be used when deploying with daemonSet: true
   useHostPort: false
   # -- When useHostPort is true this is the host port defined
   hostPort: 13000
