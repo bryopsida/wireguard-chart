@@ -1,6 +1,6 @@
 # wireguard
 
-![Version: 0.19.0](https://img.shields.io/badge/Version-0.19.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.20.0](https://img.shields.io/badge/Version-0.20.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm chart for managing a wireguard vpn in kubernetes
 
@@ -30,6 +30,18 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | disruptionBudget.enabled | bool | `true` |  |
 | disruptionBudget.minAvailable | int | `2` |  |
 | extraEnv | object | `{}` | Provide additional environment variables to the wireguard container |
+| healthSideCar.enabled | bool | `false` | Opt in side car to expose a http health end point for external load balancers that are not kubernetes aware, in most cases this is not needed |
+| healthSideCar.hostPort | int | `13000` | When useHostPort is true this is the host port defined |
+| healthSideCar.image.pullPolicy | string | `"Always"` | Pull Policy always to avoid cached rolling tags, if you change this you should use a non rolling tag |
+| healthSideCar.image.repository | string | `"ghcr.io/bryopsida/http-healthcheck-sidecar"` | Override repo if you prefer to use your own image |
+| healthSideCar.image.tag | string | `"main"` | Rolling tag used by default to take patches automatically |
+| healthSideCar.resources | object | `{"limits":{"cpu":"100m","memory":"256Mi"},"requests":{"cpu":"100m","memory":"256Mi"}}` | set resource constraints, set to nil to remove |
+| healthSideCar.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | Secure settings by default, can be overriden to reduce security posture if needed |
+| healthSideCar.service.enabled | bool | `true` | Toggle to enable the service, if the pod is a daemonset healthSideCar.useHostPort can be used instead |
+| healthSideCar.service.nodePort | int | `31313` | The port for the service exposed on each node |
+| healthSideCar.service.port | int | `3000` | Override service port if needed |
+| healthSideCar.service.type | string | `"NodePort"` | Service type, given the use case, in most cases this should be NodePort |
+| healthSideCar.useHostPort | bool | `false` | When enabled the container will define a host port, in most cases this should only be used when deploying with daemonSet: true  |
 | hostPort | int | `51820` | Host port to expose the VPN service on |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"ghcr.io/bryopsida/wireguard"` |  |
