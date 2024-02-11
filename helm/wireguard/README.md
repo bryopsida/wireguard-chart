@@ -41,7 +41,7 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | healthSideCar.service.nodePort | int | `31313` | The port for the service exposed on each node |
 | healthSideCar.service.port | int | `3000` | Override service port if needed |
 | healthSideCar.service.type | string | `"NodePort"` | Service type, given the use case, in most cases this should be NodePort |
-| healthSideCar.useHostPort | bool | `false` | When enabled the container will define a host port, in most cases this should only be used when deploying with daemonSet: true  |
+| healthSideCar.useHostPort | bool | `false` | When enabled the container will define a host port, in most cases this should only be used when deploying with daemonSet: true |
 | hostPort | int | `51820` | Host port to expose the VPN service on |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"ghcr.io/bryopsida/wireguard"` |  |
