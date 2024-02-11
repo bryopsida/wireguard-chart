@@ -104,7 +104,7 @@ spec:
           matchLabelKeys:
             - pod-template-hash
           {{- end }}
-      automountServiceAccountToken: false
+      automountServiceAccountToken: {{ .Values.healthSideCar.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.runAsUser | default 1000 }}
         fsGroupChangePolicy: "OnRootMismatch"
@@ -250,6 +250,20 @@ spec:
           {{- if .Values.volumeMounts }}
             {{- .Values.volumeMounts | toYaml | nindent 10 }}
           {{- end }}
+        {{- end }}
+        {{- if .Values.healthSideCar.enabled }}
+        - name: health
+          image: "{{ .Values.healthSideCar.image.repository }}:{{ .Values.healthSideCar.image.tag }}"
+          imagePullPolicy: "{{ .Values.healthSideCar.image.pullPolicy }}"
+          resources: {{ .Values.healthSideCar.resources | toYaml | nindent 12 }}
+          securityContext: {{ .Values.healthSideCar.securityContext | toYaml | nindent 12 }}
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+              name: wg-health-ep
+              {{- if .Values.healthSideCar.useHostPort }}
+              hostPort: {{ .Values.healthSideCar.hostPort }}
+              {{- end }}
         {{- end }}
       volumes:
       - name: run

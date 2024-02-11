@@ -1,0 +1,7 @@
+healthSideCar:
+  enabled: true
+autoscaling:
+  enabled: false
+replicaCount: 1
+deploymentStrategy:
+  type: Recreate

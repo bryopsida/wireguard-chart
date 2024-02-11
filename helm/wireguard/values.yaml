@@ -228,3 +228,47 @@ metrics:
     # -- Grafana dashboard annotations
     annotations: {}
       # k8s-sidecar-target-directory: /tmp/dashboards/Other
+## Health sidecar configuration
+healthSideCar:
+  # -- Opt in side car to expose a http health end point for external load balancers that are not kubernetes aware, in most cases this is not needed
+  enabled: false
+  # -- Secure settings by default, can be overriden to reduce security posture if needed
+  securityContext:
+    capabilities:
+      drop:
+        - ALL
+    runAsGroup: 10001
+    runAsUser: 10001
+    seccompProfile:
+      type: RuntimeDefault
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+  # -- set resource constraints, set to nil to remove
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: "100m"
+    limits:
+      memory: 256Mi
+      cpu: "100m"
+  image:
+    # -- Override repo if you prefer to use your own image
+    repository: ghcr.io/bryopsida/http-healthcheck-sidecar
+    # -- Rolling tag used by default to take patches automatically
+    tag: main
+    # -- Pull Policy always to avoid cached rolling tags, if you change this you should use a non rolling tag
+    pullPolicy: Always
+  service:
+    # -- Override service port if needed
+    port: 3000
+    # -- Toggle to enable the service, if the pod is a daemonset healthSideCar.useHostPort can be used instead
+    enabled: true
+    # -- Service type, given the use case, in most cases this should be NodePort
+    type: NodePort
+    # -- The port for the service exposed on each node
+    nodePort: 31313
+  # -- When enabled the container will define a host port, in most cases this should only be used when deploying with daemonSet: true
+  useHostPort: false
+  # -- When useHostPort is true this is the host port defined
+  hostPort: 13000
