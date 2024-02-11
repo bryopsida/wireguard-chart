@@ -1,0 +1,9 @@
+healthSideCar:
+  enabled: true
+  service:
+    enabled: false
+  useHostPort: true
+  hostPort: 10000
+autoscaling:
+  enabled: false
+daemonSet: true

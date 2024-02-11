@@ -1,0 +1,28 @@
+{{- if and .Values.healthSideCar.enabled  .Values.healthSideCar.service.enabled }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: "{{ .Release.Name }}-healthcheck"
+  labels:
+    app: "{{ .Release.Name }}-healthcheck"
+    app.kubernetes.io/component: health
+    {{- if .Values.healthSideCar.service.labels }}
+    {{- toYaml .Values.healthSideCar.service.labels | nindent 4 }}
+    {{- end }}
+  {{- if .Values.healthSideCar.service.annotations }}
+  annotations:
+    {{- toYaml .Values.healthSideCar.service.annotations | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.healthSideCar.service.type }}
+  ports:
+  - name: 
+    protocol: TCP
+    port: {{ .Values.healthSideCar.service.port }}
+    targetPort: 3000
+    {{- if eq .Values.healthSideCar.service.type "NodePort" }}
+    nodePort: {{ .Values.healthSideCar.service.nodePort }}
+    {{- end }}
+  selector:
+    app: "{{ .Release.Name }}-wireguard"
+{{- end }}
