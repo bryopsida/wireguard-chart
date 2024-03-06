@@ -43,14 +43,14 @@ wireguard:
   natAddSourceNet: true
   # -- A collection of clients that will be added to wg0.conf, accepts objects with keys PublicKey and AllowedIPs (mandatory) and optional FriendlyName or FriendlyJson (https://github.com/MindFlavor/prometheus_wireguard_exporter#friendly-tags) and PersistentKeepalive (https://www.wireguard.com/quickstart/#nat-and-firewall-traversal-persistence), stored in secret
   clients: []
-  # - FriendlyName: username1
-  #   ## FriendlyJson will override FriendlyName
-  #   # FriendlyJson:
-  #   #   username: "username1"
-  #   AllowedIPs: 10.34.0.101/32
-  #   PublicKey: QTxoajwVHWZ7qqVwY2F9T1L04M0j5GSNC15++LZw1iA=
-  #   # Normally PersistentKeepalive is not required
-  #   #PersistentKeepalive: 25
+    # - FriendlyName: username1
+    #   ## FriendlyJson will override FriendlyName
+    #   # FriendlyJson:
+    #   #   username: "username1"
+    #   AllowedIPs: 10.34.0.101/32
+    #   PublicKey: QTxoajwVHWZ7qqVwY2F9T1L04M0j5GSNC15++LZw1iA=
+    #   # Normally PersistentKeepalive is not required
+    #   #PersistentKeepalive: 25
 securityContext:
   runAsNonRoot: true
   runAsUser: 1000
@@ -120,18 +120,18 @@ affinity:
   #         operator: Exists
   podAntiAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
-    - labelSelector:
-        matchLabels:
-          app: "{{ .Release.Name }}-wireguard"
-          role: vpn
-      topologyKey: kubernetes.io/hostname
+      - labelSelector:
+          matchLabels:
+            app: "{{ .Release.Name }}-wireguard"
+            role: vpn
+        topologyKey: kubernetes.io/hostname
 # -- Set pod nodeSelector, a simplified version of affinity
 nodeSelector: {}
-# example.com/vpn: ""
+  # example.com/vpn: ""
 # -- Set pod tolerations
 tolerations: []
-# - effect: NoSchedule
-#   operator: Exists
+  # - effect: NoSchedule
+  #   operator: Exists
 
 ## Metrics configuration
 metrics:
@@ -231,7 +231,7 @@ metrics:
       grafana_dashboard: "1"
     # -- Grafana dashboard annotations
     annotations: {}
-    # k8s-sidecar-target-directory: /tmp/dashboards/Other
+      # k8s-sidecar-target-directory: /tmp/dashboards/Other
 ## Health sidecar configuration
 healthSideCar:
   # -- Opt in side car to expose a http health end point for external load balancers that are not kubernetes aware, in most cases this is not needed
@@ -240,7 +240,7 @@ healthSideCar:
   securityContext:
     capabilities:
       drop:
-      - ALL
+        - ALL
     runAsGroup: 10001
     runAsUser: 10001
     seccompProfile:
