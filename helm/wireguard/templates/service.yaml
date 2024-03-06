@@ -17,4 +17,10 @@ spec:
     {{- end }}
   selector:
     app: "{{ .Release.Name }}-wireguard"
+    {{- if .Values.service.externalTrafficPolicy }}
+    externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy }}
+    {{- end }}
+    {{- if .Values.service.loadBalancerIP }}
+    loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+    {{- end }}
 {{- end }}
