@@ -70,6 +70,8 @@ service:
   externalTrafficPolicy: ""
   # -- IP to assign to the LoadBalancer service
   loadBalancerIP: ""
+  # -- Annotations
+  annotations: {}
 # -- Name of a secret with a wireguard private key on key privatekey, if not provided on first install a hook generates one.
 secretName: ~
 replicaCount: 3
