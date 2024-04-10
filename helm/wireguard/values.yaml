@@ -72,6 +72,8 @@ service:
   loadBalancerIP: ""
   # -- Annotations
   annotations: {}
+  # -- Extra ports that can be attached to the service object, these are passed directly to the port array on the service and must be well formed to the specification
+  extraPorts: []
 # -- Name of a secret with a wireguard private key on key privatekey, if not provided on first install a hook generates one.
 secretName: ~
 replicaCount: 3
@@ -99,6 +101,8 @@ autoscaling:
   targetCPUUtilizationPercentage: 75
 # -- Provide additional environment variables to the wireguard container
 extraEnv: {}
+# -- Provide additional sidecars to the wireguard pod, these are directly attached to the pod and must be well formed ContainerSpec
+extraSideCars: []
 #  TEST_ENV_VAR: test-value
 # -- If provided, this secret will be used instead of the config created from the helm value scope
 configSecretName: ~

@@ -265,6 +265,11 @@ spec:
               hostPort: {{ .Values.healthSideCar.hostPort }}
               {{- end }}
         {{- end }}
+        {{- if .Values.extraSideCars }}
+        {{- range .Values.extraSideCars }}
+        {{- . | toYaml | nindent 10 }}
+        {{- end }}
+        {{- end }}
       volumes:
       - name: run
         emptyDir: {}
