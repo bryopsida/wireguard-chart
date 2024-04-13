@@ -29,8 +29,10 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | disablePrivateKeyManagement | bool | `false` | Disable creation and any mounting of a private key, this assumes another mechanism is provided/used at the container level to fetch the private key |
 | disruptionBudget.enabled | bool | `true` |  |
 | disruptionBudget.minAvailable | int | `2` |  |
+| extraConfigMaps | list | `[]` | Create additional configmaps that may be used in sidecars |
 | extraEnv | object | `{}` | Provide additional environment variables to the wireguard container |
 | extraSideCars | list | `[]` | Provide additional sidecars to the wireguard pod, these are directly attached to the pod and must be well formed ContainerSpec |
+| extraStorage | list | `[]` | Create storage claims that can be used by side cars |
 | healthSideCar.enabled | bool | `false` | Opt in side car to expose a http health end point for external load balancers that are not kubernetes aware, in most cases this is not needed |
 | healthSideCar.hostPort | int | `13000` | When useHostPort is true this is the host port defined |
 | healthSideCar.image.pullPolicy | string | `"Always"` | Pull Policy always to avoid cached rolling tags, if you change this you should use a non rolling tag |
@@ -104,6 +106,7 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | resources.limits.memory | string | `"256Mi"` |  |
 | resources.requests.cpu | string | `"100m"` |  |
 | resources.requests.memory | string | `"256Mi"` |  |
+| runPodOnHostNetwork | bool | `false` | Run pod on host network |
 | runtimeClassName | string | `nil` | Override the default runtime class of the container, if not provided `runc` will most likely be used |
 | secretName | string | `nil` | Name of a secret with a wireguard private key on key privatekey, if not provided on first install a hook generates one. |
 | securityContext.allowPrivilegeEscalation | bool | `true` |  |

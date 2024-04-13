@@ -1,0 +1,83 @@
+# with host network used, a service object is not needed
+service:
+  enabled: false
+replicaCount: 1
+autoscaling:
+  enabled: false
+deploymentStrategy:
+  type: "Recreate"
+# create storage volumes for wg-portal sql lite database
+extraStorage:
+  - name: wg-portal-data
+    storage: 8Gi
+    # omitting storage class and using default, if you need
+    # to target a particular storage class specify this
+    # storageClassName: some-storage-class
+    accessModes:
+      # ReadWriteOnce is used for easy testing,
+      # if you are going to run multiple pods this needs to be
+      # ReadWriteMany and you'll need a storage system that supports this
+      - ReadWriteOnce
+    volumeMode: Filesystem
+# wg-portal docs use host network and NET_ADMIN
+runPodOnHostNetwork: true
+extraConfigMaps:
+  - name: wg-portal-config
+    data:
+      # this is from the sample config file in the wg-portal repo
+      # as a placeholder in testing
+      # be sure to adjust the external_url to something appropriate for your
+      # network
+      config.yml: |
+        advanced:
+          log_level: trace
+
+        core:
+          admin_user: admin
+          admin_password: wgportal
+          create_default_peer: true
+          create_default_peer_on_creation: false
+
+        web:
+          external_url: http://localhost:8888
+          request_logging: true
+# we need to mount/attach the storage to the pod
+volumes:
+  - name: wg-portal-data
+    persistentVolumeClaim:
+      claimName: wg-portal-data
+  - name: wg-portal-config
+    configMap:
+      name: wg-portal-config
+# add wg-portal side car
+extraSideCars:
+  - name: wg-portal
+    image: wgportal/wg-portal
+    imagePullPolicy: Always
+    securityContext:
+      # wg-portal runs as root and enumerates devices
+      #   as far as I can tell it requires high level access to the node
+      #   to function
+      runAsNonRoot: false
+      capabilities:
+        add:
+          - NET_ADMIN
+    ports:
+      - containerPort: 8888
+        protocol: TCP
+        name: http
+    # we need to mount the pod volume into the side car
+    volumeMounts:
+      - mountPath: "/app/config"
+        name: wg-portal-config
+      - mountPath: "/app/data"
+        name: wg-portal-data
+      # assuming the generated wg key secret is used
+      # and the default wg0.conf management is used
+      # need to project the following into /etc/wireguard for wg-portal
+      - name: config
+        mountPath: /etc/wireguard/wg0.conf
+        subPath: wg0.conf
+      - name: privatekey
+        mountPath: /etc/wireguard/privatekey
+        subPath: privatekey

@@ -20,9 +20,7 @@ spec:
       nodePort: {{ .Values.service.nodePort }}
       {{- end }}
     {{- if .Values.service.extraPorts }}
-    {{- range .Values.service.extraPorts }}
-    {{ . | toYaml | nindent 6 }}
-    {{- end }}
+    {{- .Values.service.extraPorts | toYaml | nindent 4 }}
     {{- end }}
   selector:
     app: "{{ .Release.Name }}-wireguard"

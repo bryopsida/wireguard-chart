@@ -30,6 +30,8 @@ keygenJob:
   extraEnv: {}
 podAnnotations: {}
 labels: {}
+# -- Run pod on host network
+runPodOnHostNetwork: false
 # -- Expose VPN service on hostPort
 useHostPort: false
 # -- Host port to expose the VPN service on
@@ -101,9 +103,23 @@ autoscaling:
   targetCPUUtilizationPercentage: 75
 # -- Provide additional environment variables to the wireguard container
 extraEnv: {}
+#  TEST_ENV_VAR: test-value
 # -- Provide additional sidecars to the wireguard pod, these are directly attached to the pod and must be well formed ContainerSpec
 extraSideCars: []
-#  TEST_ENV_VAR: test-value
+# -- Create storage claims that can be used by side cars
+extraStorage: []
+# - name: conf
+#   storageClassName: default
+#   storage: 8Gi
+#   accessModes:
+#     - ReadWriteMany
+#   volumeMode: Filesystem
+# -- Create additional configmaps that may be used in sidecars
+extraConfigMaps: []
+# - name: some-config
+#    data:
+#      key1: |
+#        some config file data
 # -- If provided, this secret will be used instead of the config created from the helm value scope
 configSecretName: ~
 # -- The property/key on the secret holding the wireguard configuration file

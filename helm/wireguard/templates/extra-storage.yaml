@@ -1,0 +1,24 @@
+{{- if .Values.extraStorage }}
+{{- range .Values.extraStorage }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Release.Namespace }}
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  {{- if .storageClassName }}
+  storageClassName: {{ .storageClassName }} 
+  {{- end }}
+  {{- if .volumeName }}
+  volumeName: {{ .volumeName }}
+  {{- end }}
+  accessModes: {{ .accessModes | toYaml | nindent 4 }}
+  volumeMode: {{ .volumeMode }}
+  resources:
+    requests:
+      storage: {{ .storage }}
+{{- end }}
+{{- end }}
