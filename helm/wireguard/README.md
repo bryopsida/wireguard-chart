@@ -1,6 +1,6 @@
 # wireguard
 
-![Version: 0.22.0](https://img.shields.io/badge/Version-0.22.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.23.0](https://img.shields.io/badge/Version-0.23.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm chart for managing a wireguard vpn in kubernetes
 
@@ -29,7 +29,10 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | disablePrivateKeyManagement | bool | `false` | Disable creation and any mounting of a private key, this assumes another mechanism is provided/used at the container level to fetch the private key |
 | disruptionBudget.enabled | bool | `true` |  |
 | disruptionBudget.minAvailable | int | `2` |  |
+| extraConfigMaps | list | `[]` | Create additional configmaps that may be used in sidecars |
 | extraEnv | object | `{}` | Provide additional environment variables to the wireguard container |
+| extraSideCars | list | `[]` | Provide additional sidecars to the wireguard pod, these are directly attached to the pod and must be well formed ContainerSpec |
+| extraStorage | list | `[]` | Create storage claims that can be used by side cars |
 | healthSideCar.enabled | bool | `false` | Opt in side car to expose a http health end point for external load balancers that are not kubernetes aware, in most cases this is not needed |
 | healthSideCar.hostPort | int | `13000` | When useHostPort is true this is the host port defined |
 | healthSideCar.image.pullPolicy | string | `"Always"` | Pull Policy always to avoid cached rolling tags, if you change this you should use a non rolling tag |
@@ -103,6 +106,7 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | resources.limits.memory | string | `"256Mi"` |  |
 | resources.requests.cpu | string | `"100m"` |  |
 | resources.requests.memory | string | `"256Mi"` |  |
+| runPodOnHostNetwork | bool | `false` | Run pod on host network |
 | runtimeClassName | string | `nil` | Override the default runtime class of the container, if not provided `runc` will most likely be used |
 | secretName | string | `nil` | Name of a secret with a wireguard private key on key privatekey, if not provided on first install a hook generates one. |
 | securityContext.allowPrivilegeEscalation | bool | `true` |  |
@@ -113,6 +117,7 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | service.annotations | object | `{}` | Annotations |
 | service.enabled | bool | `true` | Whether the service will be created or not |
 | service.externalTrafficPolicy | string | `""` | External Traffic Policy for the service |
+| service.extraPorts | list | `[]` | Extra ports that can be attached to the service object, these are passed directly to the port array on the service and must be well formed to the specification |
 | service.loadBalancerIP | string | `""` | IP to assign to the LoadBalancer service |
 | service.nodePort | int | `31820` | Node port, only valid with service type: NodePort |
 | service.port | int | `51820` | Service port, default is 51820 UDP |

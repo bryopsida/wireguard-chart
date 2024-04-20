@@ -105,6 +105,9 @@ spec:
             - pod-template-hash
           {{- end }}
       automountServiceAccountToken: {{ .Values.healthSideCar.enabled }}
+      {{- if .Values.runPodOnHostNetwork }}
+      hostNetwork: true
+      {{- end }}
       securityContext:
         fsGroup: {{ .Values.securityContext.runAsUser | default 1000 }}
         fsGroupChangePolicy: "OnRootMismatch"
@@ -264,6 +267,9 @@ spec:
               {{- if .Values.healthSideCar.useHostPort }}
               hostPort: {{ .Values.healthSideCar.hostPort }}
               {{- end }}
+        {{- end }}
+        {{- if .Values.extraSideCars }}
+        {{- .Values.extraSideCars | toYaml | nindent 8 }}
         {{- end }}
       volumes:
       - name: run
