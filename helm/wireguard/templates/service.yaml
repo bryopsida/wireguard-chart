@@ -12,12 +12,15 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-  - name: wg
-    protocol: UDP
-    port: {{ .Values.service.port }}
-    targetPort: 51820
-    {{- if .Values.service.type | eq "NodePort" }}
-    nodePort: {{ .Values.service.nodePort }}
+    - name: wg
+      protocol: UDP
+      port: {{ .Values.service.port }}
+      targetPort: 51820
+      {{- if .Values.service.type | eq "NodePort" }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
+    {{- if .Values.service.extraPorts }}
+    {{- .Values.service.extraPorts | toYaml | nindent 4 }}
     {{- end }}
   selector:
     app: "{{ .Release.Name }}-wireguard"
