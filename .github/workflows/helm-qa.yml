@@ -13,7 +13,8 @@ jobs:
       matrix:
         suite:
           - name: default
-            ct_extra_args: |
+            ct_extra_args: >-
+              --upgrade
               --helm-extra-set-args='--set=service.type=ClusterIP'
     name: 'Helm (${{ matrix.suite.name }})'
     uses: curium-rocks/flows/.github/workflows/helm-qa.yml@main
