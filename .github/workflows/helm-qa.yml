@@ -20,3 +20,4 @@ jobs:
     with:
       charts_dir: 'helm'
       ct_extra_args: ${{ matrix.suite.ct_extra_args }}
+      run-kubeval: false

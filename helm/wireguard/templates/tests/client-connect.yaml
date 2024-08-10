@@ -1,0 +1,45 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wireguard-client-test
+  namespace: {{ Release.Namespace }}
+  labels:
+    helm.sh/hook: test
+spec:
+  template:
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: wireguard-client
+        image: linuxserver/wireguard:1.2.3
+        env:
+        - name: WG_SERVER
+          value: "TODO: feed this in"
+        - name: WG_PORT
+          value: "51820"
+        - name: WG_INTERFACE
+          value: "wg0"
+        - name: WG_PEER_PUBLIC_KEY
+          value: "TODO: feed this in"
+        - name: WG_PRIVATE_KEY
+          value: "TODO: feed this in"
+        - name: WG_ADDRESS
+          value: "10.0.0.2/24"
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+            storage: "100Mi"
+          limits:
+            memory: "256Mi"
+            storage: "100Mi"
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            wg-quick up /etc/wireguard/wg0.conf &&
+            sleep 5 &&
+            wg show wg0 handshake | grep -q 'handshake: [0-9]' &&
+            echo "Handshake successful" ||
+            (echo "Handshake failed" && exit 1)
+      restartPolicy: Never
+  backoffLimit: 4
