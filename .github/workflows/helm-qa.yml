@@ -9,8 +9,14 @@ on:
       - '.github/workflows/helm-qa.yml'
 jobs:
   test:
-    name: 'Helm'
+    strategy:
+      matrix:
+        suite:
+          - name: default
+            ct_extra_args: |
+              --helm-extra-set-args='--set=service.type=ClusterIP'
+    name: 'Helm (${{ matrix.suite.name }})'
     uses: curium-rocks/flows/.github/workflows/helm-qa.yml@main
     with:
       charts_dir: 'helm'
-      helm_extra_sets: '--set service.type=ClusterIP'
+      ct_extra_args: ${{ matrix.suite.ct_extra_args }}
