@@ -3,7 +3,7 @@ kind: Job
 metadata:
   name: wireguard-client-test
   namespace: {{ .Release.Namespace }}
-  labels:
+  annotations:
     helm.sh/hook: test
 spec:
   template:
@@ -29,10 +29,9 @@ spec:
           requests:
             cpu: "100m"
             memory: "128Mi"
-            storage: "100Mi"
           limits:
+            cpu: "500m"
             memory: "256Mi"
-            storage: "100Mi"
         command: ["/bin/sh", "-c"]
         args:
           - |
