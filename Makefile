@@ -13,6 +13,15 @@ template:
 deploy:
 	helm --namespace $(HELM_NAMESPACE) upgrade --install $(HELM_RELEASE_NAME) ./helm/wireguard/ -f $(OVERRIDE_PATH) $(HELM_EXTRA_ARGS)
 
+test:
+	helm --namespace $(HELM_NAMESPACE) test $(HELM_RELEASE_NAME)
+
+cluster:
+	kind create cluster
+
+cluster-go-away:
+	kind delete cluster
+
 clean-secret:
 	kubectl --namespace $(HELM_NAMESPACE) delete secret $(HELM_RELEASE_NAME)-wg-generated
 

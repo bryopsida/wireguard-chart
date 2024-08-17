@@ -1,0 +1,41 @@
+{
+    "name": "WG-Chart Dev Container",
+    "image": "mcr.microsoft.com/vscode/devcontainers/go:latest",
+    "features": {
+        "ghcr.io/devcontainers/features/github-cli:1": {},
+        "ghcr.io/devcontainers/features/common-utils:2": {},
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+        "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
+        "ghcr.io/mpriscella/features/kind:1": {},
+        "ghcr.io/devcontainers-contrib/features/apt-packages:1": {
+            "packages": "wireguard"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-kubernetes-tools.vscode-kubernetes-tools",
+                "redhat.vscode-yaml",
+                "github.vscode-pull-request-github",
+                "github.vscode-github-actions",
+                "ms-azuretools.vscode-docker",
+                "johnpapa.vscode-peacock",
+                "ms-vscode.makefile-tools"
+            ],
+            "settings": {
+                "editor.tabSize": 2,
+                "terminal.integrated.defaultProfile.linux": "zsh",
+                "terminal.integrated.profiles.linux": {
+                    "bash": {
+                        "path": "bash",
+                        "icon": "terminal-bash"
+                    },
+                    "zsh": {
+                        "path": "zsh"
+                    }
+                }
+            }
+        },
+        "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder} && curl -sS https://webinstall.dev/k9s | bash"
+    }
+}
