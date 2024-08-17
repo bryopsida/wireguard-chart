@@ -1,0 +1,100 @@
+# kics-scan ignore
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wireguard-client-test
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    helm.sh/hook: test
+spec:
+  template:
+    spec:
+      automountServiceAccountToken: false
+      initContainers:
+        - name: sysctls
+          image: busybox:stable
+          command:
+          - sh
+          - -c
+          - sysctl -w net.ipv4.ip_forward=1 && sysctl -w net.ipv4.conf.all.forwarding=1
+          securityContext:
+            runAsNonRoot: false
+            privileged: true
+          resources:
+            requests:
+              memory: 64Mi
+              cpu: "100m"
+            limits:
+              memory: 64Mi
+              cpu: "100m"
+      containers:
+        - name: wireguard-client
+          image: ghcr.io/bryopsida/wireguard:main
+          securityContext:
+            runAsNonRoot: {{ .Values.securityContext.runAsNonRoot | default true }}
+            runAsUser: {{ .Values.securityContext.runAsUser | default 1000 }}
+            readOnlyRootFilesystem: {{ .Values.securityContext.readOnlyRootFilesystem | default true }}
+            allowPrivilegeEscalation: {{ .Values.securityContext.allowPrivilegeEscalation | default true }}
+            privileged: {{ .Values.securityContext.privileged | default false }}
+            capabilities:
+              drop:
+                - ALL
+              add:
+                - NET_ADMIN
+                - NET_RAW
+                - SETUID
+                - SETGID
+          env:
+            - name: WG_PRIVATE_KEY
+              value: "gILClOGWPR+w9q4f0A7hlTKdQHC0vHwXPrGLHPKJi2o="
+            - name: WG_SERVER
+              value: "{{ .Release.Name }}-wireguard.{{ .Release.Namespace }}.svc"
+            - name: WG_SERVER_PORT
+              value: "{{ .Values.service.port }}"
+            - name: WG_SERVER_CIDR
+              value: "{{ .Values.wireguard.serverCidr }}"
+            - name: WG_CLIENT_IP
+              value: "172.32.32.2/32"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          command: 
+            - /bin/sh
+          args:
+            - -c
+            - |
+                set -e
+                
+                cat <<EOF > /tmp/wg0.conf
+                [Interface]
+                PrivateKey = ${WG_PRIVATE_KEY}
+                Address = ${WG_CLIENT_IP}
+
+                [Peer]
+                PublicKey = $(cat /etc/wireguard-server/privatekey | wg pubkey)
+                Endpoint = ${WG_SERVER}:${WG_SERVER_PORT}
+                AllowedIPs = ${WG_SERVER_CIDR}
+                EOF
+
+                wg-quick up /tmp/wg0.conf
+                sleep 5
+                sudo ping -c 1 -W 1 172.32.32.1
+          volumeMounts:
+            - name: wireguard-server-secret
+              mountPath: /etc/wireguard-server/
+              readOnly: true
+            - name: tmp-volume
+              mountPath: /tmp
+      volumes:
+        - name: wireguard-server-secret
+          secret:
+            secretName: {{ .Release.Name }}-wg-generated
+        - name: tmp-volume
+          emptyDir: {}
+      restartPolicy: Never
+  backoffLimit: 4
