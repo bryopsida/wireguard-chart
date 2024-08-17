@@ -1,6 +1,6 @@
 # wireguard
 
-![Version: 0.24.0](https://img.shields.io/badge/Version-0.24.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.25.0](https://img.shields.io/badge/Version-0.25.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm chart for managing a wireguard vpn in kubernetes
 
@@ -64,6 +64,8 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | keygenJob.podSecurityContext.fsGroup | int | `1000` |  |
 | keygenJob.podSecurityContext.fsGroupChangePolicy | string | `"Always"` |  |
 | keygenJob.podSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
+| keygenJob.useWireguardManager | bool | `false` | when enabled, uses a image with go bindings for k8s and wg    to create the secret if it does not exist, on re-runs it    it leaves the existing secret in place and exits succesfully |
+| keygenJob.wireguardMgrImage | object | `{"pullPolicy":"Always","repository":"ghcr.io/bryopsida/k8s-wireguard-mgr","tag":"main"}` | When useWireguardManager is enabled this image is used instead of the kubectl image |
 | labels | object | `{}` |  |
 | metrics.dashboard.annotations | object | `{}` | Grafana dashboard annotations |
 | metrics.dashboard.enabled | bool | `true` | Create a ConfigMap with a Grafana dashboard |

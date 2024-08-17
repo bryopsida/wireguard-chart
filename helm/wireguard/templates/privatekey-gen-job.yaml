@@ -119,12 +119,17 @@ spec:
                 mode: 0755
               {{- end }}
       containers:
-      - volumeMounts:
+      - name: keygen-job
+        {{- if not .Values.keygenJob.useWireguardManager }}
+        volumeMounts:
           - name: script
             mountPath: /job/
-        name: keygen-job
         image: "{{ .Values.keygenJob.image.repository }}:{{ .Values.keygenJob.image.tag }}"
         imagePullPolicy: "{{ .Values.keygenJob.image.pullPolicy }}"
+        {{- else }}
+        image: "{{ .Values.keygenJob.wireguardMgrImage.repository }}:{{ .Values.keygenJob.wireguardMgrImage.tag }}"
+        imagePullPolicy: "{{ .Values.keygenJob.wireguardMgrImage.pullPolicy }}"
+        {{- end }}
         securityContext: {{ .Values.keygenJob.containerSecurityContext | toYaml | nindent 10 }}
         resources:
           requests:
@@ -134,7 +139,11 @@ spec:
             memory: 64Mi
             cpu: "100m"
         env:
+          {{- if .Values.keygenJob.useWireguardManager }}
+          - name: K8S_WG_MGR_SERVER_SECRET_NAME
+          {{- else }}
           - name: SECRET_NAME
+          {{- end }}
             value: "{{ .Release.Name }}-wg-generated"
           - name: RELEASE_NAMESPACE
             value: "{{ .Release.Namespace }}"
@@ -151,5 +160,7 @@ spec:
                 name: {{ tpl $value.secretName $ }}
                 key: {{ tpl $value.secretPropertyName $ }}
           {{- end }}
+        {{- if not .Values.keygenJob.useWireguardManager }}
         command: {{ .Values.keygenJob.command | toYaml | nindent 10}}
+        {{- end }}
 {{- end }}
