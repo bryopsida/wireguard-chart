@@ -160,5 +160,7 @@ spec:
                 name: {{ tpl $value.secretName $ }}
                 key: {{ tpl $value.secretPropertyName $ }}
           {{- end }}
+        {{- if not .Values.keygenJob.useWireguardManager }}
         command: {{ .Values.keygenJob.command | toYaml | nindent 10}}
+        {{- end }}
 {{- end }}

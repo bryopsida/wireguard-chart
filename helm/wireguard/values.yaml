@@ -13,7 +13,7 @@ keygenJob:
   # -- When useWireguardManager is enabled this image is used instead of the kubectl image
   wireguardMgrImage:
     repository: ghcr.io/bryopsida/k8s-wireguard-mgr
-    tag: latest
+    tag: main
     pullPolicy: Always
   image:
     repository: ghcr.io/curium-rocks/wg-kubectl
