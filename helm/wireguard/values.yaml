@@ -52,6 +52,8 @@ wireguard:
   serverCidr: 10.34.0.0/24
   # -- Add the serverCidr to the nat source net option
   natAddSourceNet: true
+  # -- A collection of extraopts for wireguard interface
+  interfaceOpts: {}
   # -- A collection of clients that will be added to wg0.conf, accepts objects with keys PublicKey and AllowedIPs (mandatory) and optional FriendlyName or FriendlyJson (https://github.com/MindFlavor/prometheus_wireguard_exporter#friendly-tags) and PersistentKeepalive (https://www.wireguard.com/quickstart/#nat-and-firewall-traversal-persistence), stored in secret
   clients: []
     # - FriendlyName: username1
