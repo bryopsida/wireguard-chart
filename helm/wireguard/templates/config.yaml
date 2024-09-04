@@ -5,6 +5,7 @@ Address = {{ .Values.wireguard.serverAddress }}
 ListenPort = 51820
 PostUp = wg set wg0 private-key /etc/wireguard/privatekey && iptables -t nat -A POSTROUTING {{ $natSourceNetOption }} -o eth0 -j MASQUERADE
 PostDown = iptables -t nat -D POSTROUTING -s {{ $natSourceNetOption }} -o eth0 -j MASQUERADE
+{{ .Values.wireguard.extraInterfaceConfig }}
 
 # Clients
 {{- range .Values.wireguard.clients }}

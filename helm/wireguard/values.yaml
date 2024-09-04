@@ -62,6 +62,8 @@ wireguard:
     #   PublicKey: QTxoajwVHWZ7qqVwY2F9T1L04M0j5GSNC15++LZw1iA=
     #   # Normally PersistentKeepalive is not required
     #   #PersistentKeepalive: 25
+  # -- Extra configuration parameters to be added to the config Interface section. Like "MTU = 500"
+  extraInterfaceConfig: ""
 securityContext:
   runAsNonRoot: true
   runAsUser: 1000
