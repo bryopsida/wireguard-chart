@@ -87,9 +87,9 @@ service:
   annotations: {}
   # -- Extra ports that can be attached to the service object, these are passed directly to the port array on the service and must be well formed to the specification
   extraPorts: []
-  # -- loadBalancerClass for Service Controllers that support it
+  # -- loadBalancerClass for kubernetes clusters with multiple load balancer classes. This value cannot be used in a upgrade flow
   loadBalancerClass: ""
-# -- Name of a secret with a wireguard private key on key privatekey, if not provided on first install a hook generates one.
+# -- Name of a secret with a wireguard private key on key privatekey, if not provided on first install a hook generates one
 secretName: ~
 replicaCount: 3
 resources:
