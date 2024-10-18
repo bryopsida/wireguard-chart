@@ -110,7 +110,7 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | resources.requests.memory | string | `"256Mi"` |  |
 | runPodOnHostNetwork | bool | `false` | Run pod on host network |
 | runtimeClassName | string | `nil` | Override the default runtime class of the container, if not provided `runc` will most likely be used |
-| secretName | string | `nil` | Name of a secret with a wireguard private key on key privatekey, if not provided on first install a hook generates one. |
+| secretName | string | `nil` | Name of a secret with a wireguard private key on key privatekey, if not provided on first install a hook generates one |
 | securityContext.allowPrivilegeEscalation | bool | `true` |  |
 | securityContext.privileged | bool | `false` |  |
 | securityContext.readOnlyRootFilesystem | bool | `true` |  |
@@ -120,6 +120,7 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | service.enabled | bool | `true` | Whether the service will be created or not |
 | service.externalTrafficPolicy | string | `""` | External Traffic Policy for the service |
 | service.extraPorts | list | `[]` | Extra ports that can be attached to the service object, these are passed directly to the port array on the service and must be well formed to the specification |
+| service.loadBalancerClass | string | `""` | loadBalancerClass for kubernetes clusters with multiple load balancer classes. This value cannot be used in a upgrade flow |
 | service.loadBalancerIP | string | `""` | IP to assign to the LoadBalancer service |
 | service.nodePort | int | `31820` | Node port, only valid with service type: NodePort |
 | service.port | int | `51820` | Service port, default is 51820 UDP |
