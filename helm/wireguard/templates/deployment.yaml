@@ -130,7 +130,7 @@ spec:
       {{- end }}
       initContainers:
         - name: sysctls
-          image: busybox:stable
+          image: "{{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag }}"
           command:
           - sh
           - -c
