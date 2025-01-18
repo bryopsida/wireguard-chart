@@ -30,4 +30,7 @@ spec:
   {{- if .Values.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.service.loadBalancerIP }}
   {{- end }}
+  {{- if and .Values.service.loadBalancerClass (semverCompare ">=1.24-0" .Capabilities.KubeVersion.Version) }}
+  loadBalancerClass: {{ .Values.service.loadBalancerClass }}
+  {{- end }}
 {{- end }}
