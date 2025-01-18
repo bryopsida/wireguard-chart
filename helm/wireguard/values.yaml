@@ -5,6 +5,11 @@ image:
   tag: main
   pullPolicy: Always
 
+initContainer:
+  image:
+    repository: busybox
+    tag: latest
+
 keygenJob:
   # -- when enabled, uses a image with go bindings for k8s and wg
   #    to create the secret if it does not exist, on re-runs it

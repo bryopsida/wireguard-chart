@@ -1,6 +1,6 @@
 # wireguard
 
-![Version: 0.26.0](https://img.shields.io/badge/Version-0.26.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.27.0](https://img.shields.io/badge/Version-0.27.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm chart for managing a wireguard vpn in kubernetes
 
@@ -49,6 +49,8 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"ghcr.io/bryopsida/wireguard"` |  |
 | image.tag | string | `"main"` |  |
+| initContainer.image.repository | string | `"busybox"` |  |
+| initContainer.image.tag | string | `"latest"` |  |
 | keygenJob.command | list | `["/job/entry-point.sh"]` | Specify the script to run to generate the private key |
 | keygenJob.containerSecurityContext.allowPrivilegeEscalation | bool | `false` |  |
 | keygenJob.containerSecurityContext.privileged | bool | `false` |  |
