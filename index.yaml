@@ -3,6 +3,18 @@ entries:
   wireguard:
   - apiVersion: v2
     appVersion: 0.0.0
+    created: "2025-01-18T15:07:46.810241526Z"
+    description: A Helm chart for managing a wireguard vpn in kubernetes
+    digest: a8faf6574b0a19b250265279f593933c9acbec98fe34cd12ffef6903de526091
+    maintainers:
+    - name: bryopsida
+    name: wireguard
+    type: application
+    urls:
+    - https://github.com/bryopsida/wireguard-chart/releases/download/wireguard-0.28.0/wireguard-0.28.0.tgz
+    version: 0.28.0
+  - apiVersion: v2
+    appVersion: 0.0.0
     created: "2025-01-18T13:33:37.671497491Z"
     description: A Helm chart for managing a wireguard vpn in kubernetes
     digest: 1281f3c2195d18f84a7294fd3e67516db4000ed7e56ecd2c3a726ead535e475f
@@ -337,4 +349,4 @@ entries:
     urls:
     - https://github.com/bryopsida/wireguard-chart/releases/download/wireguard-0.2.0/wireguard-0.2.0.tgz
     version: 0.2.0
-generated: "2025-01-18T13:33:37.671726642Z"
+generated: "2025-01-18T15:07:46.810476813Z"
