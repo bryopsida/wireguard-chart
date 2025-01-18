@@ -1,0 +1,16 @@
+# kics-scan ignore
+service:
+  type: LoadBalancer
+  loadBalancerClass: default
+wireguard:
+  clients:
+    - AllowedIPs: 172.32.32.2/32
+      # used for testing only
+      PublicKey: NzYmaNXHi8+3NBpg7uoRFw7wO+fLG65gZToKqtecLAo=
+  serverAddress: 172.32.32.1/24
+  serverCidr: 172.32.32.0/24
+replicaCount: 1
+autoscaling:
+  enabled: false
+deploymentStrategy:
+  type: Recreate

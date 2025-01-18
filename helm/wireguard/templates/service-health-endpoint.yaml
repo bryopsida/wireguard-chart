@@ -25,4 +25,7 @@ spec:
     {{- end }}
   selector:
     app: "{{ .Release.Name }}-wireguard"
+  {{- if and .Values.healthSideCar.service.loadBalancerClass (semverCompare ">=1.24-0" .Capabilities.KubeVersion.Version) }}
+  loadBalancerClass: {{ .Values.healthSideCar.service.loadBalancerClass }}
+  {{- end }}
 {{- end }}
