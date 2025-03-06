@@ -96,6 +96,13 @@ metadata:
 spec:
   ttlSecondsAfterFinished: 60
   template:
+    metadata:
+        {{- if .Values.keygenJob.podAnnotations }}
+      annotations:
+        {{- range $key, $value := .Values.keygenJob.podAnnotations  }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
     spec:
       {{- include "wireguard.runtimeClass" . | indent 6 }}
       serviceAccountName: {{ .Release.Name }}-pre-install-job-sa
@@ -131,13 +138,7 @@ spec:
         imagePullPolicy: "{{ .Values.keygenJob.wireguardMgrImage.pullPolicy }}"
         {{- end }}
         securityContext: {{ .Values.keygenJob.containerSecurityContext | toYaml | nindent 10 }}
-        resources:
-          requests:
-            memory: 64Mi
-            cpu: "100m"
-          limits:
-            memory: 64Mi
-            cpu: "100m"
+        resources: {{ .Values.keygenJob.resources | toYaml | nindent 10 }}
         env:
           {{- if .Values.keygenJob.useWireguardManager }}
           - name: K8S_WG_MGR_SERVER_SECRET_NAME
