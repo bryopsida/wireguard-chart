@@ -1,6 +1,6 @@
 # wireguard
 
-![Version: 0.28.0](https://img.shields.io/badge/Version-0.28.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.29.0](https://img.shields.io/badge/Version-0.29.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm chart for managing a wireguard vpn in kubernetes
 
@@ -38,7 +38,7 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | healthSideCar.image.pullPolicy | string | `"Always"` | Pull Policy always to avoid cached rolling tags, if you change this you should use a non rolling tag |
 | healthSideCar.image.repository | string | `"ghcr.io/bryopsida/http-healthcheck-sidecar"` | Override repo if you prefer to use your own image |
 | healthSideCar.image.tag | string | `"main"` | Rolling tag used by default to take patches automatically |
-| healthSideCar.resources | object | `{"limits":{"cpu":"100m","memory":"256Mi"},"requests":{"cpu":"100m","memory":"256Mi"}}` | set resource constraints, set to nil to remove |
+| healthSideCar.resources | object | `{"limits":{"cpu":"100m","ephemeral-storage":"256Mi","memory":"256Mi"},"requests":{"cpu":"100m","ephemeral-storage":"8Mi","memory":"256Mi"}}` | set resource constraints, set to nil to remove |
 | healthSideCar.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | Secure settings by default, can be overriden to reduce security posture if needed |
 | healthSideCar.service.enabled | bool | `true` | Toggle to enable the service, if the pod is a daemonset healthSideCar.useHostPort can be used instead |
 | healthSideCar.service.nodePort | int | `31313` | The port for the service exposed on each node |
@@ -51,6 +51,12 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | image.tag | string | `"main"` |  |
 | initContainer.image.repository | string | `"busybox"` |  |
 | initContainer.image.tag | string | `"latest"` |  |
+| initContainer.resources.limits.cpu | string | `"100m"` |  |
+| initContainer.resources.limits.ephemeral-storage | string | `"64Mi"` |  |
+| initContainer.resources.limits.memory | string | `"64Mi"` |  |
+| initContainer.resources.requests.cpu | string | `"100m"` |  |
+| initContainer.resources.requests.ephemeral-storage | string | `"8Mi"` |  |
+| initContainer.resources.requests.memory | string | `"64Mi"` |  |
 | keygenJob.command | list | `["/job/entry-point.sh"]` | Specify the script to run to generate the private key |
 | keygenJob.containerSecurityContext.allowPrivilegeEscalation | bool | `false` |  |
 | keygenJob.containerSecurityContext.privileged | bool | `false` |  |
@@ -63,9 +69,16 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | keygenJob.image.pullPolicy | string | `"Always"` |  |
 | keygenJob.image.repository | string | `"ghcr.io/curium-rocks/wg-kubectl"` |  |
 | keygenJob.image.tag | string | `"latest"` |  |
+| keygenJob.podAnnotations | object | `{}` |  |
 | keygenJob.podSecurityContext.fsGroup | int | `1000` |  |
 | keygenJob.podSecurityContext.fsGroupChangePolicy | string | `"Always"` |  |
 | keygenJob.podSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
+| keygenJob.resources.limits.cpu | string | `"100m"` |  |
+| keygenJob.resources.limits.ephemeral-storage | string | `"128Mi"` |  |
+| keygenJob.resources.limits.memory | string | `"256Mi"` |  |
+| keygenJob.resources.requests.cpu | string | `"100m"` |  |
+| keygenJob.resources.requests.ephemeral-storage | string | `"8Mi"` |  |
+| keygenJob.resources.requests.memory | string | `"256Mi"` |  |
 | keygenJob.useWireguardManager | bool | `false` | when enabled, uses a image with go bindings for k8s and wg    to create the secret if it does not exist, on re-runs it    it leaves the existing secret in place and exits succesfully |
 | keygenJob.wireguardMgrImage | object | `{"pullPolicy":"Always","repository":"ghcr.io/bryopsida/k8s-wireguard-mgr","tag":"main"}` | When useWireguardManager is enabled this image is used instead of the kubectl image |
 | labels | object | `{}` |  |
@@ -87,6 +100,12 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | metrics.prometheusRule.groups | list | `[]` | Groups, containing the alert rules. Example:   groups:     - name: Wireguard       rules:         - alert: WireguardInstanceNotAvailable           annotations:             message: "Wireguard instance in namespace {{ `{{` }} $labels.namespace {{ `}}` }} has not been available for the last 5 minutes."           expr: |             absent(kube_pod_status_ready{namespace="{{ include "common.names.namespace" . }}", condition="true"} * on (pod) kube_pod_labels{pod=~"{{ include "common.names.fullname" . }}-\\d+", namespace="{{ include "common.names.namespace" . }}"}) != 0           for: 5m           labels:             severity: critical |
 | metrics.prometheusRule.labels | object | `{}` | Additional labels that can be used so PrometheusRule will be discovered by Prometheus |
 | metrics.prometheusRule.namespace | string | `""` | Namespace of the ServiceMonitor. If empty, current namespace is used |
+| metrics.resources.limits.cpu | string | `"100m"` |  |
+| metrics.resources.limits.ephemeral-storage | string | `"128Mi"` |  |
+| metrics.resources.limits.memory | string | `"256Mi"` |  |
+| metrics.resources.requests.cpu | string | `"100m"` |  |
+| metrics.resources.requests.ephemeral-storage | string | `"8Mi"` |  |
+| metrics.resources.requests.memory | string | `"256Mi"` |  |
 | metrics.service.annotations | object | `{}` | Annotations for enabling prometheus to access the metrics endpoints |
 | metrics.service.labels | object | `{}` | Additional service labels |
 | metrics.service.port | int | `9586` | Metrics service HTTP port |
@@ -107,8 +126,10 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | podAnnotations | object | `{}` |  |
 | replicaCount | int | `3` |  |
 | resources.limits.cpu | string | `"100m"` |  |
+| resources.limits.ephemeral-storage | string | `"128Mi"` |  |
 | resources.limits.memory | string | `"256Mi"` |  |
 | resources.requests.cpu | string | `"100m"` |  |
+| resources.requests.ephemeral-storage | string | `"8Mi"` |  |
 | resources.requests.memory | string | `"256Mi"` |  |
 | runPodOnHostNetwork | bool | `false` | Run pod on host network |
 | runtimeClassName | string | `nil` | Override the default runtime class of the container, if not provided `runc` will most likely be used |
