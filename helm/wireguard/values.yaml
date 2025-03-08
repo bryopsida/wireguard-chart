@@ -9,7 +9,15 @@ initContainer:
   image:
     repository: busybox
     tag: latest
-
+  resources:
+    requests:
+      memory: 64Mi
+      cpu: "100m"
+      ephemeral-storage: 8Mi
+    limits:
+      memory: 64Mi
+      cpu: "100m"
+      ephemeral-storage: 64Mi
 keygenJob:
   # -- when enabled, uses a image with go bindings for k8s and wg
   #    to create the secret if it does not exist, on re-runs it
@@ -24,6 +32,7 @@ keygenJob:
     repository: ghcr.io/curium-rocks/wg-kubectl
     tag: latest
     pullPolicy: Always
+  podAnnotations: {}
   podSecurityContext:
     seccompProfile:
       type: RuntimeDefault
@@ -36,6 +45,15 @@ keygenJob:
     privileged: false
     allowPrivilegeEscalation: false
     readOnlyRootFilesystem: true
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: "100m"
+      ephemeral-storage: 8Mi
+    limits:
+      memory: 256Mi
+      cpu: "100m"
+      ephemeral-storage: 128Mi
   # -- Specify the script to run to generate the private key
   command: ["/job/entry-point.sh"]
   # -- Inject additional scripts into the key generation job
@@ -101,9 +119,11 @@ resources:
   requests:
     memory: 256Mi
     cpu: "100m"
+    ephemeral-storage: 8Mi
   limits:
     memory: 256Mi
     cpu: "100m"
+    ephemeral-storage: 128Mi
 # -- Override the default runtime class of the container, if not provided `runc` will most likely be used
 runtimeClassName: ~
 deploymentStrategy:
@@ -182,6 +202,15 @@ metrics:
     repository: docker.io/mindflavor/prometheus-wireguard-exporter
     tag: 3.6.6
     pullPolicy: IfNotPresent
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: "100m"
+      ephemeral-storage: 8Mi
+    limits:
+      memory: 256Mi
+      cpu: "100m"
+      ephemeral-storage: 128Mi
   # @params -- Wireguard Exporter environment variables. See https://mindflavor.github.io/prometheus_wireguard_exporter
   extraEnv:
     # -- Enable verbose mode
@@ -293,9 +322,11 @@ healthSideCar:
     requests:
       memory: 256Mi
       cpu: "100m"
+      ephemeral-storage: 8Mi
     limits:
       memory: 256Mi
       cpu: "100m"
+      ephemeral-storage: 256Mi
   image:
     # -- Override repo if you prefer to use your own image
     repository: ghcr.io/bryopsida/http-healthcheck-sidecar

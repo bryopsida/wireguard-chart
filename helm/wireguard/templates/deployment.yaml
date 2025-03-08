@@ -136,13 +136,7 @@ spec:
           - -c
           - sysctl -w net.ipv4.ip_forward=1 && sysctl -w net.ipv4.conf.all.forwarding=1
           securityContext: {{ include "init.securitycontext" . | nindent 12 }}
-          resources:
-            requests:
-              memory: 64Mi
-              cpu: "100m"
-            limits:
-              memory: 64Mi
-              cpu: "100m"
+          resources: {{ .Values.initContainer.resources | toYaml | nindent 12 }}
       containers:
         - name: wireguard
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -218,7 +212,7 @@ spec:
           - name: PROMETHEUS_WIREGUARD_EXPORTER_PORT
             value: "{{ .Values.metrics.service.port }}"
           securityContext: {{ include "wg.securitycontext" . | nindent 12 }}
-          resources: {{ .Values.resources | toYaml | nindent 12 }}
+          resources: {{ .Values.metrics.resources | toYaml | nindent 12 }}
           startupProbe:
             httpGet:
               path: /metrics
