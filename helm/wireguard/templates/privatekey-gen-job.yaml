@@ -19,7 +19,8 @@ metadata:
 rules:
 - apiGroups: [""]
   resources: ["secrets"]
-  verbs: ["create"]
+  verbs: ["create", "get"]
+  resourceNames: ["{{ .Release.Name }}-wg-generated"]
 {{- /* Need a service account for the job/hook */}}
 ---
 apiVersion: v1
