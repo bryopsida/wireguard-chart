@@ -22,7 +22,7 @@ keygenJob:
   # -- when enabled, uses a image with go bindings for k8s and wg
   #    to create the secret if it does not exist, on re-runs it
   #    it leaves the existing secret in place and exits succesfully
-  useWireguardManager: false
+  useWireguardManager: true
   # -- When useWireguardManager is enabled this image is used instead of the kubectl image
   wireguardMgrImage:
     repository: ghcr.io/bryopsida/k8s-wireguard-mgr
