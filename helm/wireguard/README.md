@@ -79,7 +79,7 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | keygenJob.resources.requests.cpu | string | `"100m"` |  |
 | keygenJob.resources.requests.ephemeral-storage | string | `"8Mi"` |  |
 | keygenJob.resources.requests.memory | string | `"256Mi"` |  |
-| keygenJob.useWireguardManager | bool | `true` | when enabled, uses a image with go bindings for k8s and wg    to create the secret if it does not exist, on re-runs it    it leaves the existing secret in place and exits succesfully |
+| keygenJob.useWireguardManager | bool | `true` | when enabled, uses a image with go bindings for k8s and wg    to create the secret if it does not exist, on re-runs it     leaves the existing secret in place and exits succesfully |
 | keygenJob.wireguardMgrImage | object | `{"pullPolicy":"Always","repository":"ghcr.io/bryopsida/k8s-wireguard-mgr","tag":"main"}` | When useWireguardManager is enabled this image is used instead of the kubectl image |
 | labels | object | `{}` |  |
 | metrics.dashboard.annotations | object | `{}` | Grafana dashboard annotations |
