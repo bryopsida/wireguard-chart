@@ -134,7 +134,7 @@ spec:
           command:
           - sh
           - -c
-          {{- if .Values.forwardIPv6 }}
+          {{- if .Values.wireguard.forwardIPv6 }}
           - sysctl -w net.ipv4.ip_forward=1 && sysctl -w net.ipv4.conf.all.forwarding=1 && sysctl -w net.ipv6.conf.all.forwarding=1
           {{- else }}
           - sysctl -w net.ipv4.ip_forward=1 && sysctl -w net.ipv4.conf.all.forwarding=1
