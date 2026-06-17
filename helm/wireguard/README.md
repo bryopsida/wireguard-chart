@@ -1,6 +1,6 @@
 # wireguard
 
-![Version: 0.31.2](https://img.shields.io/badge/Version-0.31.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.32.0](https://img.shields.io/badge/Version-0.32.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm chart for managing a wireguard vpn in kubernetes
 
@@ -57,6 +57,7 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | initContainer.resources.requests.cpu | string | `"100m"` |  |
 | initContainer.resources.requests.ephemeral-storage | string | `"8Mi"` |  |
 | initContainer.resources.requests.memory | string | `"64Mi"` |  |
+| keygenJob.affinity | object | `{}` | Set keygenJob pod affinity or antiAffinity |
 | keygenJob.command | list | `["/job/entry-point.sh"]` | Specify the script to run to generate the private key |
 | keygenJob.containerSecurityContext.allowPrivilegeEscalation | bool | `false` |  |
 | keygenJob.containerSecurityContext.privileged | bool | `false` |  |
@@ -69,6 +70,7 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | keygenJob.image.pullPolicy | string | `"Always"` |  |
 | keygenJob.image.repository | string | `"ghcr.io/curium-rocks/wg-kubectl"` |  |
 | keygenJob.image.tag | string | `"latest"` |  |
+| keygenJob.nodeSelector | object | `{}` | Set keygenJob nodeSelector, a simplified version of affinity |
 | keygenJob.podAnnotations | object | `{}` |  |
 | keygenJob.podSecurityContext.fsGroup | int | `1000` |  |
 | keygenJob.podSecurityContext.fsGroupChangePolicy | string | `"Always"` |  |
@@ -79,6 +81,7 @@ A Helm chart for managing a wireguard vpn in kubernetes
 | keygenJob.resources.requests.cpu | string | `"100m"` |  |
 | keygenJob.resources.requests.ephemeral-storage | string | `"8Mi"` |  |
 | keygenJob.resources.requests.memory | string | `"256Mi"` |  |
+| keygenJob.tolerations | list | `[]` | Set keygenJob tolerations |
 | keygenJob.useWireguardManager | bool | `true` | when enabled, uses a image with go bindings for k8s and wg to create the secret if it does not exist, on re-runs it leaves the existing secret in place and exits succesfully |
 | keygenJob.wireguardMgrImage | object | `{"pullPolicy":"Always","repository":"ghcr.io/bryopsida/k8s-wireguard-mgr","tag":"main"}` | When useWireguardManager is enabled this image is used instead of the kubectl image |
 | labels | object | `{}` |  |
