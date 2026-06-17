@@ -4,6 +4,8 @@ on:
   schedule:
     - cron:  '5 8 * * *'
   pull_request:
+    branches:
+      - main
     paths:
       - 'helm/**'
       - '.github/workflows/helm-qa.yml'
