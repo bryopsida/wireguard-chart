@@ -58,6 +58,21 @@ keygenJob:
   extraScripts: {}
   # -- Add additional environment variables to the key generation job, supports helm templating
   extraEnv: {}
+  # -- Set keygenJob pod affinity or antiAffinity
+  affinity: {}
+    # nodeAffinity:
+    #   requiredDuringSchedulingIgnoredDuringExecution:
+    #     nodeSelectorTerms:
+    #     - matchExpressions:
+    #       - key: "example.com/vpn"
+    #         operator: Exists
+  # -- Set keygenJob nodeSelector, a simplified version of affinity
+  nodeSelector: {}
+    # example.com/vpn: ""
+  # -- Set keygenJob tolerations
+  tolerations: []
+    # - effect: NoSchedule
+    #   operator: Exists
 podAnnotations: {}
 labels: {}
 # -- Run pod on host network

@@ -112,6 +112,17 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if .Values.keygenJob.affinity }}
+      affinity:
+        {{- $affinity := .Values.keygenJob.affinity | toYaml }}
+        {{ tpl $affinity . | nindent 8 | trim }}
+      {{- end }}
+      {{- if .Values.keygenJob.nodeSelector }}
+      nodeSelector: {{ .Values.keygenJob.nodeSelector | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.keygenJob.tolerations }}
+      tolerations: {{ .Values.keygenJob.tolerations | toYaml | nindent 8 }}
+      {{- end }}
       volumes:
         - name: script
           configMap:
